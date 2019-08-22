@@ -25,7 +25,7 @@ BEmult = F -> (
 	-- this code doesn't use the diagram of B-E's paper
 	-- instead it uses its dual and accounts for degrees.
 	-- e's are the exterior powers of the differentials
-	e := (dual exteriorPower(r_(i-1),RI.dd_i))**G;
+	e := (dual exteriorPower(r_(i-1),F.dd_i))**G;
 	-- we need the iso of free modules Wedge^i F->Wedge^j F^*
 	-- from the pairing Wedge^i F ** Wedge^j F->Wedge^(i+j) F
 	-- where F is free has rank i+j.
