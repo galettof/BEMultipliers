@@ -40,6 +40,6 @@ BEmult = F -> (
 	a = dual (b ** (dual G));
 	mults = prepend(a,mults);
 	i = i-1;
-	)
+	);
     return mults;
     )
