@@ -6,20 +6,23 @@ K=koszul vars A
 --a=bem(K,2)
 a=bem(K)
 w2d2=exteriorPower(2,K.dd_2)
-e2=exteriorDuality(K,2)
-isHomogeneous e2
-G2=exteriorPower(3,K_2)
-a_2*((dual a_3)**G2)*e2==w2d2
+c2=exteriorDuality(K,2)
+b3=dualMultiplier(K,3)
+a_2*b3*c2 == w2d2
 
 
 -- example with Eagon-Northcott of 2x4 matrix
 restart
-load "BEmult.m2"
+needsPackage "BEMultipliers"
 A=QQ[x_(1,1)..x_(2,4)]
 G=transpose genericMatrix(A,4,2)
 I=minors(2,G)
 RI=res I
-a=BEmult(RI);
-E=exteriorPower(5,RI.dd_2);
-M=a_1*(transpose a_2)*inverse(wedgeIso(3,8));
-
+a=bem(RI);
+w2d2=exteriorPower(5,RI.dd_2)
+c2=exteriorDuality(RI,2)
+b3=dualMultiplier(RI,3)
+a_2*b3*c2 == w2d2
+-- this is still wrong
+-- I think it's because I'm not using the dual of the
+-- exterior duality in constructing the multipliers

@@ -15,7 +15,8 @@ export {
     "buchsbaumEisenbudMultipliers",--method
     "bem",--shortcut
     "BEmults",--CacheTable key
-    "exteriorDuality"
+    "exteriorDuality",--method
+    "dualMultiplier"--method
     }
 
 
@@ -123,6 +124,17 @@ exteriorDuality(ChainComplex,ZZ) := (F,k) -> (
     M := promote(exteriorDuality(r,n),ring F);
     map(codomain,domain,M)
     )
+
+
+dualMultiplier = method(TypicalValue => Matrix)
+
+-- returns the dual of a BE multiplier with the appropriate
+-- degrees of domain and codomain (via a twist)
+dualMultiplier(ChainComplex,ZZ) := (F,k) -> (
+    G := exteriorPower(rank F_(k-1),F_(k-1));
+    (dual bem(F,k)) ** G
+    )
+
 
 -------------------------------------------------------------------
 -------------------------------------------------------------------
