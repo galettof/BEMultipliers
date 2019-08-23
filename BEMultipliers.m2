@@ -68,10 +68,11 @@ buchsbaumEisenbudMultipliers(ChainComplex,ZZ) := Matrix => (F,k) -> (
 	-- instead it uses its dual and accounts for degrees.
 	-- e's are the exterior powers of the differentials
 	e := (dual exteriorPower(r_(i-1),F.dd_i))**G;
-	W := promote(exteriorDuality(r_(i-1),f_i),ring F);
-	I := map(target e,target e,W);
+	-- next: change of basis using exterior duality
+	w := exteriorDuality(F,i);
+	c := (dual w)**G;
 	-- get next multiplier by factoring as in dual diagram
-	b := e // (I*a);
+	b := e // (c*a);
 	-- now dualize back and fix the degrees
 	a = dual (b ** (dual G));
 	F.cache#BEmults#i = a;
