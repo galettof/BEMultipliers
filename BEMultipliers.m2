@@ -33,8 +33,8 @@ export {
 -- "Some structure theorems for finite free resolutions"
 -- The only difference is that in order to make each multiplier
 -- homogeneous we give its domain the appropriate degree
-buchsbaumEisenbudMultipliers = method()
-bem = buchsbaumEisenbudMultipliers
+bem = buchsbaumEisenbudMultipliers = method()
+--bem = buchsbaumEisenbudMultipliers
 
 
 -- WARNING: currently no safety checks are implemented!
@@ -208,9 +208,77 @@ doc ///
 	       ring.
 ///
 
+doc ///
+     Key
+     	  (buchsbaumEisenbudMultipliers,ChainComplex)
+     Headline
+     	  compute Buchsbaum-Eisenbud multipliers of a resolution
+     Usage
+     	  a = buchsbaumEisenbudMultipliers(F)
+     Inputs
+     	  F:ChainComplex
+     Outputs
+     	  a:List
+     Description
+     	  Text
+	       Use this method to compute all Buchsbaum-Eisenbud
+	       multipliers of a free resolution @TT "F"@ over a
+	       polynomial ring. By default, Macaulay2 does not
+	       check that @TT "F"@ is actually a resolution.
+	       
+	       The output is a list @TT "a"@ containing all the
+	       multipliers in increasing order. In order to match
+	       the indexing of the paper by Buchsbaum and Eisenbud,
+	       a zero map is inserted at the beginning of the list.
+	       In other words, @TT "a_i"@ is the i-th multiplier.
+	       
+	       The results of the computation are stored in the
+	       cache of @TT "F"@ with the key @TO "BEmults"@.
+     	  Example
+	       R=QQ[x,y,z]
+	       K=koszul vars R
+	       a=buchsbaumEisenbudMultipliers(K)
+	       peek K.cache#BEmults
+     SeeAlso
+     	  BEmults
+///
+
+doc ///
+     Key
+     	  (buchsbaumEisenbudMultipliers,ZZ,ChainComplex)
+     Headline
+     	  return the k-th Buchsbaum-Eisenbud multiplier of a free resolution
+     Usage
+     	  a = buchsbaumEisenbudMultipliers(k,F)
+     Inputs
+     	  k:ZZ
+     	  F:ChainComplex
+     Outputs
+     	  M:Matrix
+     Description
+     	  Text
+	       Use this method to return a single Buchsbaum-Eisenbud
+	       multiplier of a free resolution @TT "F"@ over a
+	       polynomial ring. By default, Macaulay2 does not
+	       check that @TT "F"@ is actually a resolution.
+	       Note that the definition of the multipliers is
+	       recursive, so all the previous ones are computed as
+	       well (and stored).
+	       
+	       The output is the matrix of the k-th multiplier.
+     	  Example
+	       R=QQ[x,y,z]
+	       K=koszul vars R
+	       buchsbaumEisenbudMultipliers(2,K)
+	       peek K.cache#BEmults
+     SeeAlso
+     	  BEmults
+///
+
 end
 
 
 uninstallPackage "BEMultipliers"
 restart
 installPackage "BEMultipliers"
+viewHelp
