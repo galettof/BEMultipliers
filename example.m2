@@ -3,8 +3,14 @@ restart
 needsPackage "BEMultipliers"
 A=QQ[x,y,z]
 K=koszul vars A
-a=bem(K,2)
-bem(K)
+--a=bem(K,2)
+a=bem(K)
+w2d2=exteriorPower(2,K.dd_2)
+e2=exteriorDuality(K,2)
+isHomogeneous e2
+G2=exteriorPower(3,K_2)
+a_2*((dual a_3)**G2)*e2==w2d2
+
 
 -- example with Eagon-Northcott of 2x4 matrix
 restart

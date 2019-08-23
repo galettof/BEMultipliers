@@ -11,8 +11,19 @@ newPackage(
      )
 
 
-export {"buchsbaumEisenbudMultipliers","bem","BEmults"}
+export {
+    "buchsbaumEisenbudMultipliers",--method
+    "bem",--shortcut
+    "BEmults",--CacheTable key
+    "exteriorDuality"
+    }
 
+
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+-- Exported methods
+-------------------------------------------------------------------
+-------------------------------------------------------------------
 
 
 -- the following method computes Buchsbaum-Eisenbud
@@ -23,8 +34,11 @@ export {"buchsbaumEisenbudMultipliers","bem","BEmults"}
 buchsbaumEisenbudMultipliers = method()
 bem = buchsbaumEisenbudMultipliers
 
+
+-- WARNING: currently no safety checks are implemented!
+
 -- this computes up to the k-th multiplier and returns it
-buchsbaumEisenbudMultipliers(ChainComplex,ZZ) := Matrix (F,k) -> (
+buchsbaumEisenbudMultipliers(ChainComplex,ZZ) := Matrix => (F,k) -> (
     -- check if stored and return
     if F.cache#?BEmults then (
 	if F.cache#BEmults#?k then return F.cache#BEmults#k;
@@ -53,7 +67,7 @@ buchsbaumEisenbudMultipliers(ChainComplex,ZZ) := Matrix (F,k) -> (
 	-- instead it uses its dual and accounts for degrees.
 	-- e's are the exterior powers of the differentials
 	e := (dual exteriorPower(r_(i-1),F.dd_i))**G;
-	W := promote(wedgeIso(r_(i-1),f_i),ring F);
+	W := promote(exteriorDuality(r_(i-1),f_i),ring F);
 	I := map(target e,target e,W);
 	-- get next multiplier by factoring as in dual diagram
 	b := e // (I*a);
@@ -68,8 +82,53 @@ buchsbaumEisenbudMultipliers(ChainComplex,ZZ) := Matrix (F,k) -> (
 -- this returns all multipliers in a list
 buchsbaumEisenbudMultipliers(ChainComplex) := List => F -> (
     n := length F;
-    toList apply(1..n,k->bem(F,k))
+    -- we create a zero multiplier and prepend it to the list
+    -- of multipliers created with the earlier function
+    -- this is purely for convenience of indices
+    R := ring F;
+    {map(R^0,R^0,0)} | toList apply(1..n,k->bem(F,k))
     )
+
+
+-- we need the iso of free modules Wedge^i F->Wedge^j F^*
+-- from the pairing Wedge^i F ** Wedge^j F->Wedge^(i+j) F
+-- where F is free has rank i+j.
+-- Because of the way M2 lists subsets, this matrix
+-- has +/-1 on the antidiagonal, 0's elsewhere
+-- where the sign depends on the number of inversions
+-- of the sets indexing row and column
+exteriorDuality = method(TypicalValue => Matrix)
+
+-- this computes the duality as a matrix of free abelian groups
+exteriorDuality(ZZ,ZZ) := (r,n) -> (
+    U := subsets(toList(0..n-1),r);
+    V := subsets(toList(0..n-1),n-r);
+    b := binomial(n,r);
+    M := mutableMatrix map(ZZ^b,ZZ^b,0);
+    for i to b-1 do (
+	M_(b-i-1,i) = (-1)^(numberOfInversions(U_i,V_(b-i-1)));
+	);
+    return matrix M;
+    )
+
+
+-- this gives the duality for the k-th module in a free resolution
+exteriorDuality(ChainComplex,ZZ) := (F,k) -> (
+    r := rank F.dd_k;
+    n := rank F_k;
+    -- need a rank one free module to approriately twist degrees
+    G := exteriorPower(n,F_k);
+    domain := exteriorPower(r,F_k);
+    codomain := exteriorPower(n-r,dual F_k) ** G;
+    M := promote(exteriorDuality(r,n),ring F);
+    map(codomain,domain,M)
+    )
+
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+-- Unexported functions
+-------------------------------------------------------------------
+-------------------------------------------------------------------
 
 
 -- u and v are complementary sublists of 0..n-1
@@ -82,22 +141,4 @@ numberOfInversions = (u,v) -> (
 	    );
 	);
     return c;
-    )
-
--- we need the iso of free modules Wedge^i F->Wedge^j F^*
--- from the pairing Wedge^i F ** Wedge^j F->Wedge^(i+j) F
--- where F is free has rank i+j.
--- Because of the way M2 lists subsets, this matrix
--- has +/-1 on the antidiagonal, 0's elsewhere
--- where the sign depends on the number of inversions
--- of the sets indexing row and column
-wedgeIso = (r,n) -> (
-    U := subsets(toList(0..n-1),r);
-    V := subsets(toList(0..n-1),n-r);
-    b := binomial(n,r);
-    M := mutableMatrix map(ZZ^b,ZZ^b,0);
-    for i to b-1 do (
-	M_(b-i-1,i) = (-1)^(numberOfInversions(U_i,V_(b-i-1)));
-	);
-    return matrix M;
     )
