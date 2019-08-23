@@ -1,4 +1,4 @@
--- example with Koszul complex
+-- example: Koszul complex
 restart
 needsPackage "BEMultipliers"
 A=QQ[x,y,z]
@@ -9,12 +9,12 @@ a=bem(K)
 bem(K,2)
 -- let's check the structure theorem
 exteriorPower(rank K.dd_2,K.dd_2) ==
-bem(K,2) * dualMultiplier(K,3) * exteriorDuality(K,2)
+bem(K,2) * dualMultiplier(K,3)
 exteriorPower(rank K.dd_1,K.dd_1) ==
-bem(K,1) * dualMultiplier(K,2) * exteriorDuality(K,1)
+bem(K,1) * dualMultiplier(K,2)
 
 
--- example with Eagon-Northcott of 2x4 matrix
+-- example: Eagon-Northcott of 2x4 matrix
 restart
 needsPackage "BEMultipliers"
 A=QQ[x_(1,1)..x_(2,4)]
@@ -27,12 +27,12 @@ a=bem(RI);
 bem(RI,2)
 -- let's check the structure theorem
 exteriorPower(rank RI.dd_2,RI.dd_2) ==
-bem(RI,2) * dualMultiplier(RI,3) * exteriorDuality(RI,2)
+bem(RI,2) * dualMultiplier(RI,3)
 exteriorPower(rank RI.dd_1,RI.dd_1) ==
-bem(RI,1) * dualMultiplier(RI,2) * exteriorDuality(RI,1)
+bem(RI,1) * dualMultiplier(RI,2)
 
 
--- example with monomial ideal
+-- example: all squarefree monomials of degree 2
 restart
 needsPackage "BEMultipliers"
 A=QQ[x_1..x_4]
@@ -44,24 +44,25 @@ a=bem(RI);
 bem(RI,2)
 -- let's check the structure theorem
 exteriorPower(rank RI.dd_2,RI.dd_2) ==
-bem(RI,2) * dualMultiplier(RI,3) * exteriorDuality(RI,2)
+bem(RI,2) * dualMultiplier(RI,3)
 exteriorPower(rank RI.dd_1,RI.dd_1) ==
-bem(RI,1) * dualMultiplier(RI,2) * exteriorDuality(RI,1)
+bem(RI,1) * dualMultiplier(RI,2)
 
 
--- example with larger Eagon-Northcott
+-- example: B-E's resolution of 6x6 pfaffians of 7x7 skew matrix
 restart
 needsPackage "BEMultipliers"
-A=QQ[x_(1,1)..x_(4,6)]
-G=transpose genericMatrix(A,6,4)
-I=minors(4,G)
+A=QQ[x_(1,2)..x_(1,7),x_(2,3)..x_(2,7),x_(3,4)..x_(3,7),
+    x_(4,5)..x_(4,7),x_(5,6)..x_(5,7),x_(6,7)]
+G=genericSkewMatrix(A,7)
+I=pfaffians(6,G);
 RI=res I
 -- compute multipliers, returns a list
-a=bem(RI);
+elapsedTime a=bem(RI);
 -- can also see individual ones
 bem(RI,2)
 -- let's check the structure theorem
 exteriorPower(rank RI.dd_2,RI.dd_2) ==
-bem(RI,2) * dualMultiplier(RI,3) * exteriorDuality(RI,2)
+bem(RI,2) * dualMultiplier(RI,3)
 exteriorPower(rank RI.dd_1,RI.dd_1) ==
-bem(RI,1) * dualMultiplier(RI,2) * exteriorDuality(RI,1)
+bem(RI,1) * dualMultiplier(RI,2)

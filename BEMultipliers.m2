@@ -15,7 +15,7 @@ export {
     "buchsbaumEisenbudMultipliers",--method
     "bem",--shortcut
     "BEmults",--CacheTable key
-    "exteriorDuality",--method
+    --"exteriorDuality",--method
     "dualMultiplier"--method
     }
 
@@ -92,6 +92,36 @@ buchsbaumEisenbudMultipliers(ChainComplex) := List => F -> (
     )
 
 
+dualMultiplier = method(TypicalValue => Matrix)
+
+-- returns the dual of a BE multiplier with the appropriate
+-- degrees of domain and codomain (via twist by a rank one module)
+dualMultiplier(ChainComplex,ZZ) := (F,k) -> (
+    G := exteriorPower(rank F_(k-1),F_(k-1));
+    ((dual bem(F,k)) ** G) * exteriorDuality(F,k-1)
+    )
+
+
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+-- Unexported functions
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+-- u and v are complementary sublists of 0..n-1
+-- this function counts the number of inversion to unshuffle u|v
+numberOfInversions = (u,v) -> (
+    c := 0;
+    for j in v do (
+	for i in u do (
+	    if j-i<0 then c=c+1;
+	    );
+	);
+    return c;
+    )
+
+
 -- we need the iso of free modules Wedge^i F->Wedge^j F^*
 -- from the pairing Wedge^i F ** Wedge^j F->Wedge^(i+j) F
 -- where F is free has rank i+j.
@@ -124,34 +154,4 @@ exteriorDuality(ChainComplex,ZZ) := (F,k) -> (
     codomain := exteriorPower(n-r,dual F_k) ** G;
     M := promote(exteriorDuality(r,n),ring F);
     map(codomain,domain,M)
-    )
-
-
-dualMultiplier = method(TypicalValue => Matrix)
-
--- returns the dual of a BE multiplier with the appropriate
--- degrees of domain and codomain (via a twist)
-dualMultiplier(ChainComplex,ZZ) := (F,k) -> (
-    G := exteriorPower(rank F_(k-1),F_(k-1));
-    (dual bem(F,k)) ** G
-    )
-
-
--------------------------------------------------------------------
--------------------------------------------------------------------
--- Unexported functions
--------------------------------------------------------------------
--------------------------------------------------------------------
-
-
--- u and v are complementary sublists of 0..n-1
--- this function counts the number of inversion to unshuffle u|v
-numberOfInversions = (u,v) -> (
-    c := 0;
-    for j in v do (
-	for i in u do (
-	    if j-i<0 then c=c+1;
-	    );
-	);
-    return c;
     )
