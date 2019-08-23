@@ -1,10 +1,10 @@
 -- example with Koszul complex
 restart
-load "BEmult.m2"
+needsPackage "BEMultipliers"
 A=QQ[x,y,z]
 K=koszul vars A
-a=BEmult(K)
-
+a=bem(K,2)
+bem(K)
 
 -- example with Eagon-Northcott of 2x4 matrix
 restart

@@ -1,9 +1,37 @@
--- the following function computes Buchsbaum-Eisenbud
+newPackage(
+     "BEMultipliers",
+     Version => "0.1",
+     Date => "August 23, 2019",
+     AuxiliaryFiles => false,
+     Authors => {{Name => "Federico Galetto",
+     	       Email => "galetto.federico@gmail.com",
+	       HomePage => "https://math.galetto.org"}},
+     Headline => "Buchsbaum-Eisenbud multipliers of free resolutions",
+     PackageImports => {"SimpleDoc"}
+     )
+
+
+export {"buchsbaumEisenbudMultipliers","bem","BEmults"}
+
+
+
+-- the following method computes Buchsbaum-Eisenbud
 -- multipliers of a free resolution based on B-E's paper
 -- "Some structure theorems for finite free resolutions"
--- the only difference is that in order to make each multiplier
+-- The only difference is that in order to make each multiplier
 -- homogeneous we give its domain the appropriate degree
-BEmult = F -> (
+buchsbaumEisenbudMultipliers = method()
+bem = buchsbaumEisenbudMultipliers
+
+-- this computes up to the k-th multiplier and returns it
+buchsbaumEisenbudMultipliers(ChainComplex,ZZ) := Matrix (F,k) -> (
+    -- check if stored and return
+    if F.cache#?BEmults then (
+	if F.cache#BEmults#?k then return F.cache#BEmults#k;
+	);
+    -- otherwise create the hash tables to store results in cache
+    F.cache#BEmults = new MutableHashTable;
+    -- now we start the actual computation
     -- length of the resolution
     n := length F;
     -- ranks of the differentials
@@ -13,11 +41,10 @@ BEmult = F -> (
     -- the a will house the next multiplier
     -- the last multiplier is simply an exterior power
     a := exteriorPower(r_(n-1),F.dd_n);
-    -- mults is the list of multipliers that will be returned
-    mults := {a};
+    F.cache#BEmults#n = a;
     -- i is a running index
     i := n-1;
-    while (i > 0) do (
+    while (i >= k) do (
 	-- the G's are rank one modules generated in the
 	-- appropriate degree to make everything homogeneous.
 	-- in fact this G is the domain of the next multiplier a
@@ -32,11 +59,18 @@ BEmult = F -> (
 	b := e // (I*a);
 	-- now dualize back and fix the degrees
 	a = dual (b ** (dual G));
-	mults = prepend(a,mults);
+	F.cache#BEmults#i = a;
 	i = i-1;
 	);
-    return mults;
+    return F.cache#BEmults#k;
     )
+
+-- this returns all multipliers in a list
+buchsbaumEisenbudMultipliers(ChainComplex) := List => F -> (
+    n := length F;
+    toList apply(1..n,k->bem(F,k))
+    )
+
 
 -- u and v are complementary sublists of 0..n-1
 -- this function counts the number of inversion to unshuffle u|v
