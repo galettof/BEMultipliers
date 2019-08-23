@@ -26,14 +26,8 @@ BEmult = F -> (
 	-- instead it uses its dual and accounts for degrees.
 	-- e's are the exterior powers of the differentials
 	e := (dual exteriorPower(r_(i-1),F.dd_i))**G;
-	-- we need the iso of free modules Wedge^i F->Wedge^j F^*
-	-- from the pairing Wedge^i F ** Wedge^j F->Wedge^(i+j) F
-	-- where F is free has rank i+j.
-	-- because of the way M2 computes exterior powers
-	-- this iso is simply the matrix with 1's on the
-	-- antidiagonal and 0's everywhere else.
-	-- we obtain this as a permutation matrix
-	I := (id_(target e))^(reverse toList(0..rank(target e)-1));
+	W := promote(wedgeIso(r_(i-1),f_i),ring F);
+	I := map(target e,target e,W);
 	-- get next multiplier by factoring as in dual diagram
 	b := e // (I*a);
 	-- now dualize back and fix the degrees
@@ -42,4 +36,34 @@ BEmult = F -> (
 	i = i-1;
 	);
     return mults;
+    )
+
+-- u and v are complementary sublists of 0..n-1
+-- this function counts the number of inversion to unshuffle u|v
+numberOfInversions = (u,v) -> (
+    c := 0;
+    for j in v do (
+	for i in u do (
+	    if j-i<0 then c=c+1;
+	    );
+	);
+    return c;
+    )
+
+-- we need the iso of free modules Wedge^i F->Wedge^j F^*
+-- from the pairing Wedge^i F ** Wedge^j F->Wedge^(i+j) F
+-- where F is free has rank i+j.
+-- Because of the way M2 lists subsets, this matrix
+-- has +/-1 on the antidiagonal, 0's elsewhere
+-- where the sign depends on the number of inversions
+-- of the sets indexing row and column
+wedgeIso = (r,n) -> (
+    U := subsets(toList(0..n-1),r);
+    V := subsets(toList(0..n-1),n-r);
+    b := binomial(n,r);
+    M := mutableMatrix map(ZZ^b,ZZ^b,0);
+    for i to b-1 do (
+	M_(b-i-1,i) = (-1)^(numberOfInversions(U_i,V_(b-i-1)));
+	);
+    return matrix M;
     )
