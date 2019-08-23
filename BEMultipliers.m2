@@ -6,6 +6,7 @@ newPackage(
      Authors => {{Name => "Federico Galetto",
      	       Email => "galetto.federico@gmail.com",
 	       HomePage => "https://math.galetto.org"}},
+     HomePage => "https://github.com/galettof/BEMultipliers",
      Headline => "Buchsbaum-Eisenbud multipliers of free resolutions",
      PackageImports => {"SimpleDoc"}
      )
@@ -39,7 +40,7 @@ bem = buchsbaumEisenbudMultipliers
 -- WARNING: currently no safety checks are implemented!
 
 -- this computes up to the k-th multiplier and returns it
-buchsbaumEisenbudMultipliers(ChainComplex,ZZ) := Matrix => (F,k) -> (
+buchsbaumEisenbudMultipliers(ZZ,ChainComplex) := Matrix => (k,F) -> (
     -- check if stored and return
     if F.cache#?BEmults then (
 	if F.cache#BEmults#?k then return F.cache#BEmults#k;
@@ -69,7 +70,7 @@ buchsbaumEisenbudMultipliers(ChainComplex,ZZ) := Matrix => (F,k) -> (
 	-- e's are the exterior powers of the differentials
 	e := (dual exteriorPower(r_(i-1),F.dd_i))**G;
 	-- next: change of basis using exterior duality
-	w := exteriorDuality(F,i);
+	w := exteriorDuality(i,F);
 	c := (dual w)**G;
 	-- get next multiplier by factoring as in dual diagram
 	b := e // (c*a);
@@ -88,7 +89,7 @@ buchsbaumEisenbudMultipliers(ChainComplex) := List => F -> (
     -- of multipliers created with the earlier function
     -- this is purely for convenience of indices
     R := ring F;
-    {map(R^0,R^0,0)} | toList apply(1..n,k->bem(F,k))
+    {map(R^0,R^0,0)} | toList apply(1..n,k->bem(k,F))
     )
 
 
@@ -96,9 +97,9 @@ dualMultiplier = method(TypicalValue => Matrix)
 
 -- returns the dual of a BE multiplier with the appropriate
 -- degrees of domain and codomain (via twist by a rank one module)
-dualMultiplier(ChainComplex,ZZ) := (F,k) -> (
+dualMultiplier(ZZ,ChainComplex) := (k,F) -> (
     G := exteriorPower(rank F_(k-1),F_(k-1));
-    ((dual bem(F,k)) ** G) * exteriorDuality(F,k-1)
+    ((dual bem(k,F)) ** G) * exteriorDuality(k-1,F)
     )
 
 
@@ -145,7 +146,7 @@ exteriorDuality(ZZ,ZZ) := (r,n) -> (
 
 
 -- this gives the duality for the k-th module in a free resolution
-exteriorDuality(ChainComplex,ZZ) := (F,k) -> (
+exteriorDuality(ZZ,ChainComplex) := (k,F) -> (
     r := rank F.dd_k;
     n := rank F_k;
     -- need a rank one free module to approriately twist degrees
@@ -155,3 +156,61 @@ exteriorDuality(ChainComplex,ZZ) := (F,k) -> (
     M := promote(exteriorDuality(r,n),ring F);
     map(codomain,domain,M)
     )
+
+
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+-- Documentation
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+beginDocumentation()
+doc ///
+    Key
+    	BEMultipliers
+    Headline
+    	Buchsbaum-Eisenbud multipliers of free resolutions
+    Description
+    	Text
+	    @EM "BEMultipliers"@ is a Macaulay2 package that
+	    can be used to compute Buchsbaum-Eisenbud multipliers
+	    of minimal free resolutions of modules over polynomial
+	    rings as introduced in
+	    @HREF("https://doi.org/10.1016/S0001-8708(74)80019-8",
+	    "Buchsbaum, Eisenbud - Some structure theorems for
+	    finite free resolutions")@.
+///
+
+doc ///
+    Key
+    	BEmults
+    Headline
+    	cache key for Buchsbaum-Eisenbud multipliers
+    Description
+    	Text
+	    When @TO "buchsbaumEisenbudMultipliers"@ is called to
+	    compute Buchsbaum-Eisenbud multipliers of a resolution,
+	    it stores the results of the computation in a
+	    @TO "HashTable"@ in the cache of the resolution.
+	    The key to access this information is @TT "BEmults"@.
+///
+
+doc ///
+     Key
+     	  buchsbaumEisenbudMultipliers
+     Headline
+     	  compute Buchsbaum-Eisenbud multipliers of a resolution
+     Description
+     	  Text
+	       Use this method to compute Buchsbaum-Eisenbud
+	       multipliers of a free resolution over a polynomial
+	       ring.
+///
+
+end
+
+
+uninstallPackage "BEMultipliers"
+restart
+installPackage "BEMultipliers"

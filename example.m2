@@ -6,12 +6,12 @@ K=koszul vars A
 -- compute multipliers, returns a list
 a=bem(K)
 -- can also see individual ones
-bem(K,2)
+bem(2,K)
 -- let's check the structure theorem
 exteriorPower(rank K.dd_2,K.dd_2) ==
-bem(K,2) * dualMultiplier(K,3)
+bem(2,K) * dualMultiplier(3,K)
 exteriorPower(rank K.dd_1,K.dd_1) ==
-bem(K,1) * dualMultiplier(K,2)
+bem(1,K) * dualMultiplier(2,K)
 
 
 -- example: Eagon-Northcott of 2x4 matrix
@@ -24,12 +24,12 @@ RI=res I
 -- compute multipliers, returns a list
 a=bem(RI);
 -- can also see individual ones
-bem(RI,2)
+bem(2,RI)
 -- let's check the structure theorem
 exteriorPower(rank RI.dd_2,RI.dd_2) ==
-bem(RI,2) * dualMultiplier(RI,3)
+bem(2,RI) * dualMultiplier(3,RI)
 exteriorPower(rank RI.dd_1,RI.dd_1) ==
-bem(RI,1) * dualMultiplier(RI,2)
+bem(1,RI) * dualMultiplier(2,RI)
 
 
 -- example: all squarefree monomials of degree 2
@@ -41,12 +41,12 @@ RI=res I
 -- compute multipliers, returns a list
 a=bem(RI);
 -- can also see individual ones
-bem(RI,2)
+bem(2,RI)
 -- let's check the structure theorem
 exteriorPower(rank RI.dd_2,RI.dd_2) ==
-bem(RI,2) * dualMultiplier(RI,3)
+bem(2,RI) * dualMultiplier(3,RI)
 exteriorPower(rank RI.dd_1,RI.dd_1) ==
-bem(RI,1) * dualMultiplier(RI,2)
+bem(1,RI) * dualMultiplier(2,RI)
 
 
 -- example: B-E's resolution of 6x6 pfaffians of 7x7 skew matrix
@@ -60,9 +60,9 @@ RI=res I
 -- compute multipliers, returns a list
 elapsedTime a=bem(RI);
 -- can also see individual ones
-bem(RI,2)
+bem(2,RI)
 -- let's check the structure theorem
 exteriorPower(rank RI.dd_2,RI.dd_2) ==
-bem(RI,2) * dualMultiplier(RI,3)
+bem(2,RI) * dualMultiplier(3,RI)
 exteriorPower(rank RI.dd_1,RI.dd_1) ==
-bem(RI,1) * dualMultiplier(RI,2)
+bem(1,RI) * dualMultiplier(2,RI)
