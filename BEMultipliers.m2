@@ -210,6 +210,16 @@ doc ///
 
 doc ///
      Key
+     	  "bem"
+     Headline
+     	  compute Buchsbaum-Eisenbud multipliers of a resolution
+     Description
+     	  Text
+	       Use @TT "bem"@ as a synonym for @TO "buchsbaumEisenbudMultipliers"@.
+///
+
+doc ///
+     Key
      	  (buchsbaumEisenbudMultipliers,ChainComplex)
      Headline
      	  compute Buchsbaum-Eisenbud multipliers of a resolution
@@ -273,6 +283,42 @@ doc ///
 	       peek K.cache#BEmults
      SeeAlso
      	  BEmults
+///
+
+doc ///
+     Key
+     	  dualMultiplier
+	  (dualMultiplier,ZZ,ChainComplex)
+     Headline
+     	  compute the dual of a Buchsbaum-Eisenbud multiplier
+     Usage
+     	  M = dualMultiplier(k,F)
+     Inputs
+     	  k:ZZ
+     	  F:ChainComplex
+     Outputs
+     	  M:Matrix
+     Description
+     	  Text
+	       Use this method to compute the dual of a
+	       Buchsbaum-Eisenbud multipliers of a free
+	       resolution over a polynomial ring. The dual of a
+	       multiplier is the dual as a module homomorphism but
+	       shifted in the appropriate degree. This is necessary
+	       in order to make the commutative diagram of the
+	       First Structure Theorem of Buchsbaum and Eisenbud
+	       a diagram of graded modules.
+     	  Example
+	       R=QQ[x,y,z]
+	       K=koszul vars R
+	       a=buchsbaumEisenbudMultipliers(K)
+     	  Text
+	       We can use the dual of a multiplier to check the
+	       First Structure Theorem holds.
+     	  Example
+	       exteriorPower(rank K.dd_2,K.dd_2) == bem(2,K) * dualMultiplier(3,K)
+	       exteriorPower(rank K.dd_1,K.dd_1) == bem(1,K) * dualMultiplier(2,K)
+	       
 ///
 
 end
