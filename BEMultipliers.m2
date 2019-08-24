@@ -1,7 +1,7 @@
 newPackage(
      "BEMultipliers",
-     Version => "0.1",
-     Date => "August 23, 2019",
+     Version => "0.2",
+     Date => "August 24, 2019",
      AuxiliaryFiles => false,
      Authors => {{Name => "Federico Galetto",
      	       Email => "galetto.federico@gmail.com",
