@@ -34,29 +34,30 @@ export {
 -- The only difference is that in order to make each multiplier
 -- homogeneous we give its domain the appropriate degree
 bem = buchsbaumEisenbudMultipliers = method()
---bem = buchsbaumEisenbudMultipliers
 
 
 -- WARNING: currently no safety checks are implemented!
 
 -- this computes up to the k-th multiplier and returns it
 buchsbaumEisenbudMultipliers(ZZ,ChainComplex) := Matrix => (k,F) -> (
+    -- get the index of the last nonzero module of the resolution
+    n := max F;
+    while F_n == 0 do n = n-1;
+    if (k > n or k <= min F) then
+    	error ("the first argument should be the homological
+	    degree of the domain of a nonzero differential");
     -- check if stored and return
     if F.cache#?BEmults then (
 	if F.cache#BEmults#?k then return F.cache#BEmults#k;
-	);
+	)
     -- otherwise create the hash tables to store results in cache
-    F.cache#BEmults = new MutableHashTable;
+    else (
+	F.cache#BEmults = new MutableHashTable;
+	);
     -- now we start the actual computation
-    -- length of the resolution
-    n := length F;
-    -- ranks of the differentials
-    r := apply(1..n,i->rank F.dd_i);
-    -- format of the resolution
-    f := apply(n+1,i->rank F_i);
     -- the a will house the next multiplier
     -- the last multiplier is simply an exterior power
-    a := exteriorPower(r_(n-1),F.dd_n);
+    a := exteriorPower(rank F.dd_n,F.dd_n);
     F.cache#BEmults#n = a;
     -- i is a running index
     i := n-1;
@@ -64,11 +65,11 @@ buchsbaumEisenbudMultipliers(ZZ,ChainComplex) := Matrix => (k,F) -> (
 	-- the G's are rank one modules generated in the
 	-- appropriate degree to make everything homogeneous.
 	-- in fact this G is the domain of the next multiplier a
-	G := exteriorPower(f_i,F_i);
+	G := exteriorPower(rank F_i,F_i);
 	-- this code doesn't use the diagram of B-E's paper
 	-- instead it uses its dual and accounts for degrees.
 	-- e's are the exterior powers of the differentials
-	e := (dual exteriorPower(r_(i-1),F.dd_i))**G;
+	e := (dual exteriorPower(rank F.dd_i,F.dd_i))**G;
 	-- next: change of basis using exterior duality
 	w := exteriorDuality(i,F);
 	c := (dual w)**G;
@@ -84,12 +85,10 @@ buchsbaumEisenbudMultipliers(ZZ,ChainComplex) := Matrix => (k,F) -> (
 
 -- this returns all multipliers in a list
 buchsbaumEisenbudMultipliers(ChainComplex) := List => F -> (
-    n := length F;
-    -- we create a zero multiplier and prepend it to the list
-    -- of multipliers created with the earlier function
-    -- this is purely for convenience of indices
-    R := ring F;
-    {map(R^0,R^0,0)} | toList apply(1..n,k->bem(k,F))
+    -- get the index of the last nonzero module of the resolution
+    n := max F;
+    while F_n == 0 do n = n-1;
+    toList apply(min(F)+1..n,k->bem(k,F))
     )
 
 
@@ -224,11 +223,11 @@ doc ///
      Headline
      	  compute Buchsbaum-Eisenbud multipliers of a resolution
      Usage
-     	  a = buchsbaumEisenbudMultipliers(F)
+     	  buchsbaumEisenbudMultipliers(F)
      Inputs
      	  F:ChainComplex
      Outputs
-     	  a:List
+     	  :List
      Description
      	  Text
 	       Use this method to compute all Buchsbaum-Eisenbud
@@ -236,18 +235,15 @@ doc ///
 	       polynomial ring. By default, Macaulay2 does not
 	       check that @TT "F"@ is actually a resolution.
 	       
-	       The output is a list @TT "a"@ containing all the
-	       multipliers in increasing order. In order to match
-	       the indexing of the paper by Buchsbaum and Eisenbud,
-	       a zero map is inserted at the beginning of the list.
-	       In other words, @TT "a_i"@ is the i-th multiplier.
+	       The output is a list containing all the
+	       multipliers in increasing order.
 	       
 	       The results of the computation are stored in the
 	       cache of @TT "F"@ with the key @TO "BEmults"@.
      	  Example
 	       R=QQ[x,y,z]
 	       K=koszul vars R
-	       a=buchsbaumEisenbudMultipliers(K)
+	       buchsbaumEisenbudMultipliers(K)
 	       peek K.cache#BEmults
      SeeAlso
      	  BEmults
@@ -259,12 +255,12 @@ doc ///
      Headline
      	  return the k-th Buchsbaum-Eisenbud multiplier of a free resolution
      Usage
-     	  a = buchsbaumEisenbudMultipliers(k,F)
+     	  buchsbaumEisenbudMultipliers(k,F)
      Inputs
      	  k:ZZ
      	  F:ChainComplex
      Outputs
-     	  M:Matrix
+     	  :Matrix
      Description
      	  Text
 	       Use this method to return a single Buchsbaum-Eisenbud
@@ -292,12 +288,12 @@ doc ///
      Headline
      	  compute the dual of a Buchsbaum-Eisenbud multiplier
      Usage
-     	  M = dualMultiplier(k,F)
+     	  dualMultiplier(k,F)
      Inputs
      	  k:ZZ
      	  F:ChainComplex
      Outputs
-     	  M:Matrix
+     	  :Matrix
      Description
      	  Text
 	       Use this method to compute the dual of a
@@ -311,7 +307,7 @@ doc ///
      	  Example
 	       R=QQ[x,y,z]
 	       K=koszul vars R
-	       a=buchsbaumEisenbudMultipliers(K)
+	       dualMultiplier(3,K)
      	  Text
 	       We can use the dual of a multiplier to check the
 	       First Structure Theorem holds.
