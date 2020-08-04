@@ -15,7 +15,6 @@ newPackage(
 export {
     "buchsbaumEisenbudMultipliers",--method
     "bem",--shortcut
-    "BEmults",--CacheTable key
     --"exteriorDuality",--method
     "dualMultiplier"--method
     }
@@ -47,18 +46,18 @@ buchsbaumEisenbudMultipliers(ZZ,ChainComplex) := Matrix => (k,F) -> (
     	error ("the first argument should be the homological
 	    degree of the domain of a nonzero differential");
     -- check if stored and return
-    if F.cache#?BEmults then (
-	if F.cache#BEmults#?k then return F.cache#BEmults#k;
+    if F.cache#?bem then (
+	if F.cache#bem#?k then return F.cache#bem#k;
 	)
     -- otherwise create the hash tables to store results in cache
     else (
-	F.cache#BEmults = new MutableHashTable;
+	F.cache#bem = new MutableHashTable;
 	);
     -- now we start the actual computation
     -- the a will house the next multiplier
     -- the last multiplier is simply an exterior power
     a := exteriorPower(rank F.dd_n,F.dd_n);
-    F.cache#BEmults#n = a;
+    F.cache#bem#n = a;
     -- i is a running index
     i := n-1;
     while (i >= k) do (
@@ -77,10 +76,10 @@ buchsbaumEisenbudMultipliers(ZZ,ChainComplex) := Matrix => (k,F) -> (
 	b := e // (c*a);
 	-- now dualize back and fix the degrees
 	a = dual (b ** (dual G));
-	F.cache#BEmults#i = a;
+	F.cache#bem#i = a;
 	i = i-1;
 	);
-    return F.cache#BEmults#k;
+    return F.cache#bem#k;
     )
 
 -- this returns all multipliers in a list
@@ -182,20 +181,6 @@ doc ///
 ///
 
 doc ///
-    Key
-    	BEmults
-    Headline
-    	cache key for Buchsbaum-Eisenbud multipliers
-    Description
-    	Text
-	    When @TO "buchsbaumEisenbudMultipliers"@ is called to
-	    compute Buchsbaum-Eisenbud multipliers of a resolution,
-	    it stores the results of the computation in a
-	    @TO "HashTable"@ in the cache of the resolution.
-	    The key to access this information is @TT "BEmults"@.
-///
-
-doc ///
      Key
      	  buchsbaumEisenbudMultipliers
      Headline
@@ -239,14 +224,12 @@ doc ///
 	       multipliers in increasing order.
 	       
 	       The results of the computation are stored in the
-	       cache of @TT "F"@ with the key @TO "BEmults"@.
+	       cache of @TT "F"@ with the key @TT "bem"@.
      	  Example
 	       R=QQ[x,y,z]
 	       K=koszul vars R
 	       buchsbaumEisenbudMultipliers(K)
-	       peek K.cache#BEmults
-     SeeAlso
-     	  BEmults
+	       peek K.cache#bem
 ///
 
 doc ///
@@ -276,9 +259,7 @@ doc ///
 	       R=QQ[x,y,z]
 	       K=koszul vars R
 	       buchsbaumEisenbudMultipliers(2,K)
-	       peek K.cache#BEmults
-     SeeAlso
-     	  BEmults
+	       peek K.cache#bem
 ///
 
 doc ///
