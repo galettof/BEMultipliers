@@ -158,6 +158,28 @@ exteriorDuality(ZZ,ChainComplex) := (k,F) -> (
 
 -------------------------------------------------------------------
 -------------------------------------------------------------------
+-- Code below provided by Keller VandeBogert on 8/4/2020
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+lowerBEM = (j,k,F) -> (
+    if not (j-1)*(length F)<=j*(k-1)-2 then (
+	error"Not defined for chosen parameters";
+	)
+    else (
+    -- if (j-1)*(length F)<=j*(k-1)-2 then (
+	fRank=rank F_(k-1);
+	dRank1 =rank(F.dd_(k));
+	dRank2 =rank(F.dd_(k-1));
+	inda =wedgeProduct(dRank1,j,F_(k-1))*((bem(k,F))**id_(exteriorPower(j,F_(k-1))));
+	wedgeD = dual exteriorPower(dRank2-j,F.dd_(k-1));
+	extD =exteriorDuality(dRank2-j,fRank);
+	return dual((extD*(matrix entries wedgeD))//(matrix entries inda));
+	);
+)
+
+-------------------------------------------------------------------
+-------------------------------------------------------------------
 -- Documentation
 -------------------------------------------------------------------
 -------------------------------------------------------------------
