@@ -16,7 +16,8 @@ export {
     "buchsbaumEisenbudMultipliers",--method
     "bem",--shortcut
     --"exteriorDuality",--method
-    "dualMultiplier"--method
+    "dualMultiplier",--method
+    "lowerBEM"
     }
 
 
@@ -168,12 +169,12 @@ lowerBEM = (j,k,F) -> (
 	)
     else (
     -- if (j-1)*(length F)<=j*(k-1)-2 then (
-	fRank=rank F_(k-1);
-	dRank1 =rank(F.dd_(k));
-	dRank2 =rank(F.dd_(k-1));
-	inda =wedgeProduct(dRank1,j,F_(k-1))*((bem(k,F))**id_(exteriorPower(j,F_(k-1))));
-	wedgeD = dual exteriorPower(dRank2-j,F.dd_(k-1));
-	extD =exteriorDuality(dRank2-j,fRank);
+	fRank:=rank F_(k-1);
+	dRank1:=rank(F.dd_(k));
+	dRank2:=rank(F.dd_(k-1));
+	inda:=wedgeProduct(dRank1,j,F_(k-1))*((bem(k,F))**id_(exteriorPower(j,F_(k-1))));
+	wedgeD:= dual exteriorPower(dRank2-j,F.dd_(k-1));
+	extD:=exteriorDuality(dRank2-j,fRank);
 	return dual((extD*(matrix entries wedgeD))//(matrix entries inda));
 	);
 )

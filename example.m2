@@ -12,7 +12,11 @@ exteriorPower(rank K.dd_2,K.dd_2) ==
 bem(2,K) * dualMultiplier(3,K)
 exteriorPower(rank K.dd_1,K.dd_1) ==
 bem(1,K) * dualMultiplier(2,K)
-
+-- let's compute all lower order multipliers
+lowerBEM(0,1,K)
+lowerBEM(0,2,K)
+lowerBEM(0,3,K)
+lowerBEM(1,3,K)
 
 -- example: Eagon-Northcott of 2x4 matrix
 restart
