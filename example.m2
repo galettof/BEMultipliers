@@ -9,7 +9,12 @@ a=bem(K)
 bem(2,K)
 -- let's check the structure theorem
 exteriorPower(rank K.dd_2,K.dd_2) ==
-bem(2,K) * dualMultiplier(3,K)
+bem(2,K) * ((dual bem(3,K))**exteriorPower(rank K_2,K_2)) * exteriorDuality(rank K.dd_2,2,K)
+-- this was the old check
+-- I intend to remove the dualMultiplier method
+-- and instead expose the exteriorDuality method
+-- However, I need to redefine exterior duality for a free
+-- module instead of a complex
 exteriorPower(rank K.dd_1,K.dd_1) ==
 bem(1,K) * dualMultiplier(2,K)
 -- let's compute all lower order multipliers

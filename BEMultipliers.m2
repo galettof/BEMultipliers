@@ -15,7 +15,7 @@ newPackage(
 export {
     "buchsbaumEisenbudMultipliers",--method
     "bem",--shortcut
-    --"exteriorDuality",--method
+    "exteriorDuality",--method
     "dualMultiplier",--method
     "lowerBEM"
     }
@@ -62,21 +62,17 @@ buchsbaumEisenbudMultipliers(ZZ,ChainComplex) := Matrix => (k,F) -> (
     -- i is a running index
     i := n-1;
     while (i >= k) do (
-	-- the G's are rank one modules generated in the
-	-- appropriate degree to make everything homogeneous.
-	-- in fact this G is the domain of the next multiplier a
-	G := exteriorPower(rank F_i,F_i);
 	-- this code doesn't use the diagram of B-E's paper
 	-- instead it uses its dual and accounts for degrees.
 	-- e's are the exterior powers of the differentials
-	e := (dual exteriorPower(rank F.dd_i,F.dd_i))**G;
-	-- next: change of basis using exterior duality
-	w := exteriorDuality(rank F.dd_i,i,F);
-	c := (dual w)**G;
+	e := dual exteriorPower(rank F.dd_i,F.dd_i);
+	-- the G's are rank one modules generated in the
+	-- appropriate degree to make everything homogeneous.
+	w := dual exteriorDuality(rank F.dd_i,i,F);
+	G := dual exteriorPower(rank F_i,F_i);
 	-- get next multiplier by factoring as in dual diagram
-	b := e // (c*a);
-	-- now dualize back and fix the degrees
-	a = dual (b ** (dual G));
+	b := e // (w*(a**G));
+	a = dual b;
 	F.cache#bem#i = a;
 	i = i-1;
 	);
