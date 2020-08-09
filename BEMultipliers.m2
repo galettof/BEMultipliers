@@ -71,7 +71,7 @@ buchsbaumEisenbudMultipliers(ZZ,ChainComplex) := Matrix => (k,F) -> (
 	-- e's are the exterior powers of the differentials
 	e := (dual exteriorPower(rank F.dd_i,F.dd_i))**G;
 	-- next: change of basis using exterior duality
-	w := exteriorDuality(i,F);
+	w := exteriorDuality(rank F.dd_i,i,F);
 	c := (dual w)**G;
 	-- get next multiplier by factoring as in dual diagram
 	b := e // (c*a);
@@ -98,7 +98,7 @@ dualMultiplier = method(TypicalValue => Matrix)
 -- degrees of domain and codomain (via twist by a rank one module)
 dualMultiplier(ZZ,ChainComplex) := (k,F) -> (
     G := exteriorPower(rank F_(k-1),F_(k-1));
-    ((dual bem(k,F)) ** G) * exteriorDuality(k-1,F)
+    ((dual bem(k,F)) ** G) * exteriorDuality(rank F.dd_(k-1),k-1,F)
     )
 
 
@@ -145,8 +145,10 @@ exteriorDuality(ZZ,ZZ) := (r,n) -> (
 
 
 -- this gives the duality for the k-th module in a free resolution
-exteriorDuality(ZZ,ChainComplex) := (k,F) -> (
-    r := rank F.dd_k;
+-- forming the iso of free modules Wedge^r F_k->Wedge^(n-r) F_k^*
+-- where r is given by the user and n = rank F_k
+exteriorDuality(ZZ,ZZ,ChainComplex) := (r,k,F) -> (
+    --r := rank F.dd_k;
     n := rank F_k;
     -- need a rank one free module to approriately twist degrees
     G := exteriorPower(n,F_k);
@@ -173,9 +175,12 @@ lowerBEM = (j,k,F) -> (
 	dRank1:=rank(F.dd_(k));
 	dRank2:=rank(F.dd_(k-1));
 	inda:=wedgeProduct(dRank1,j,F_(k-1))*((bem(k,F))**id_(exteriorPower(j,F_(k-1))));
-	wedgeD:= dual exteriorPower(dRank2-j,F.dd_(k-1));
-	extD:=exteriorDuality(dRank2-j,fRank);
-	return dual((extD*(matrix entries wedgeD))//(matrix entries inda));
+	--wedgeD:= dual exteriorPower(dRank2-j,F.dd_(k-1));
+	w:=exteriorPower(dRank2-j,F.dd_(k-1));
+	extD:=exteriorDuality(dRank2-j,k-1,F);
+	G := exteriorPower(rank F_(k-1),F_(k-1));
+	return (((dual (w*extD))**G)//inda);
+	--return dual((extD*(matrix entries wedgeD))//(matrix entries inda));
 	);
 )
 

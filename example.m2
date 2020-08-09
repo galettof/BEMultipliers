@@ -70,3 +70,18 @@ exteriorPower(rank RI.dd_2,RI.dd_2) ==
 bem(2,RI) * dualMultiplier(3,RI)
 exteriorPower(rank RI.dd_1,RI.dd_1) ==
 bem(1,RI) * dualMultiplier(2,RI)
+
+-- example: bigger Koszul complex
+restart
+needsPackage "BEMultipliers"
+A=QQ[x_1..x_4]
+K=koszul vars A
+-- compute multipliers, returns a list
+a=bem(K)
+-- can also see individual ones
+bem(2,K)
+-- let's check the structure theorem
+exteriorPower(rank K.dd_2,K.dd_2) ==
+bem(2,K) * dualMultiplier(3,K)
+exteriorPower(rank K.dd_1,K.dd_1) ==
+bem(1,K) * dualMultiplier(2,K)
