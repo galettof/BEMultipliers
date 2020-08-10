@@ -66,9 +66,9 @@ buchsbaumEisenbudMultipliers(ZZ,ChainComplex) := Matrix => (k,F) -> (
 	-- instead it uses its dual and accounts for degrees.
 	-- e's are the exterior powers of the differentials
 	e := dual exteriorPower(rank F.dd_i,F.dd_i);
-	-- the G's are rank one modules generated in the
+	-- G is a rank one module generated in the
 	-- appropriate degree to make everything homogeneous.
-	w := dual exteriorDuality(rank F.dd_i,i,F);
+	w := dual exteriorDuality(rank F.dd_i,F_i);
 	G := dual exteriorPower(rank F_i,F_i);
 	-- get next multiplier by factoring as in dual diagram
 	b := e // (w*(a**G));
@@ -85,6 +85,57 @@ buchsbaumEisenbudMultipliers(ChainComplex) := List => F -> (
     n := max F;
     while F_n == 0 do n = n-1;
     toList apply(min(F)+1..n,k->bem(k,F))
+    )
+
+-- Below is the iso of free modules Wedge^i F->Wedge^j F^* ** Wedge^(i+j) F
+-- from the pairing Wedge^i F ** Wedge^j F->Wedge^(i+j) F
+-- where F is free of rank i+j.
+-- Because of the way M2 lists subsets, this matrix
+-- has +/-1 on the antidiagonal, 0's elsewhere
+-- where the sign depends on the number of inversions
+-- of the sets indexing row and column
+exteriorDuality = method(TypicalValue => Matrix)
+
+-- this computes the duality as a matrix of free abelian groups
+exteriorDuality(ZZ,ZZ) := (r,n) -> (
+    U := subsets(toList(0..n-1),r);
+    V := subsets(toList(0..n-1),n-r);
+    b := binomial(n,r);
+    M := mutableMatrix map(ZZ^b,ZZ^b,0);
+    for i to b-1 do (
+	M_(b-i-1,i) = (-1)^(numberOfInversions(U_i,V_(b-i-1)));
+	);
+    return matrix M;
+    )
+
+-- this is the duality Wedge^r F ->(Wedge^(n-r) F)^* ** Wedge^n F
+-- for a free R-module F of rank n
+exteriorDuality(ZZ,Module) := (r,F) -> (
+    if isFreeModule(F) then (
+    	n := rank F;
+    	-- need a rank one free module to approriately twist degrees
+    	G := exteriorPower(n,F);
+    	domain := exteriorPower(r,F);
+    	codomain := exteriorPower(n-r,dual F) ** G;
+    	M := promote(exteriorDuality(r,n),ring F);
+    	return map(codomain,domain,M);
+    	) else (
+	    error "Only implemented for free modules";
+    	);
+    )
+
+-- this gives the duality for the k-th module in a free resolution
+-- forming the iso of free modules Wedge^r F_k->Wedge^(n-r) F_k^*
+-- where r is given by the user and n = rank F_k
+exteriorDuality(ZZ,ZZ,ChainComplex) := (r,k,F) -> (
+    --r := rank F.dd_k;
+    n := rank F_k;
+    -- need a rank one free module to approriately twist degrees
+    G := exteriorPower(n,F_k);
+    domain := exteriorPower(r,F_k);
+    codomain := exteriorPower(n-r,dual F_k) ** G;
+    M := promote(exteriorDuality(r,n),ring F);
+    map(codomain,domain,M)
     )
 
 
@@ -117,42 +168,6 @@ numberOfInversions = (u,v) -> (
     return c;
     )
 
-
--- we need the iso of free modules Wedge^i F->Wedge^j F^*
--- from the pairing Wedge^i F ** Wedge^j F->Wedge^(i+j) F
--- where F is free has rank i+j.
--- Because of the way M2 lists subsets, this matrix
--- has +/-1 on the antidiagonal, 0's elsewhere
--- where the sign depends on the number of inversions
--- of the sets indexing row and column
-exteriorDuality = method(TypicalValue => Matrix)
-
--- this computes the duality as a matrix of free abelian groups
-exteriorDuality(ZZ,ZZ) := (r,n) -> (
-    U := subsets(toList(0..n-1),r);
-    V := subsets(toList(0..n-1),n-r);
-    b := binomial(n,r);
-    M := mutableMatrix map(ZZ^b,ZZ^b,0);
-    for i to b-1 do (
-	M_(b-i-1,i) = (-1)^(numberOfInversions(U_i,V_(b-i-1)));
-	);
-    return matrix M;
-    )
-
-
--- this gives the duality for the k-th module in a free resolution
--- forming the iso of free modules Wedge^r F_k->Wedge^(n-r) F_k^*
--- where r is given by the user and n = rank F_k
-exteriorDuality(ZZ,ZZ,ChainComplex) := (r,k,F) -> (
-    --r := rank F.dd_k;
-    n := rank F_k;
-    -- need a rank one free module to approriately twist degrees
-    G := exteriorPower(n,F_k);
-    domain := exteriorPower(r,F_k);
-    codomain := exteriorPower(n-r,dual F_k) ** G;
-    M := promote(exteriorDuality(r,n),ring F);
-    map(codomain,domain,M)
-    )
 
 
 -------------------------------------------------------------------
