@@ -5,7 +5,10 @@ newPackage(
      AuxiliaryFiles => false,
      Authors => {{Name => "Federico Galetto",
      	       Email => "galetto.federico@gmail.com",
-	       HomePage => "https://math.galetto.org"}},
+	       HomePage => "https://math.galetto.org"},
+	   {Name => "Keller VandeBogert",
+     	       Email => "kellerlv@math.sc.edu",
+	       HomePage => "https://sites.google.com/view/kellervandebogert/home?authuser=0"}},
      HomePage => "https://github.com/galettof/BEMultipliers",
      Headline => "Buchsbaum-Eisenbud multipliers of free resolutions",
      PackageImports => {"SimpleDoc"}
