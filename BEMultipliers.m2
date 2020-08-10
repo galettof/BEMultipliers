@@ -13,8 +13,7 @@ newPackage(
 
 
 export {
-    "buchsbaumEisenbudMultipliers",--method
-    "bem",--shortcut
+    "aMultiplier",--method
     "exteriorDuality",--method
     "dualMultiplier",--method
     "lowerBEM"
@@ -33,13 +32,13 @@ export {
 -- "Some structure theorems for finite free resolutions"
 -- The only difference is that in order to make each multiplier
 -- homogeneous we give its domain the appropriate degree
-bem = buchsbaumEisenbudMultipliers = method()
+aMultiplier = aMultiplier = method()
 
 
 -- WARNING: currently no safety checks are implemented!
 
 -- this computes up to the k-th multiplier and returns it
-buchsbaumEisenbudMultipliers(ZZ,ChainComplex) := Matrix => (k,F) -> (
+aMultiplier(ZZ,ChainComplex) := Matrix => (k,F) -> (
     -- get the index of the last nonzero module of the resolution
     n := max F;
     while F_n == 0 do n = n-1;
@@ -47,18 +46,18 @@ buchsbaumEisenbudMultipliers(ZZ,ChainComplex) := Matrix => (k,F) -> (
     	error ("the first argument should be the homological
 	    degree of the domain of a nonzero differential");
     -- check if stored and return
-    if F.cache#?bem then (
-	if F.cache#bem#?k then return F.cache#bem#k;
+    if F.cache#?aMultiplier then (
+	if F.cache#aMultiplier#?k then return F.cache#aMultiplier#k;
 	)
     -- otherwise create the hash tables to store results in cache
     else (
-	F.cache#bem = new MutableHashTable;
+	F.cache#aMultiplier = new MutableHashTable;
 	);
     -- now we start the actual computation
     -- the a will house the next multiplier
     -- the last multiplier is simply an exterior power
     a := exteriorPower(rank F.dd_n,F.dd_n);
-    F.cache#bem#n = a;
+    F.cache#aMultiplier#n = a;
     -- i is a running index
     i := n-1;
     while (i >= k) do (
@@ -73,18 +72,18 @@ buchsbaumEisenbudMultipliers(ZZ,ChainComplex) := Matrix => (k,F) -> (
 	-- get next multiplier by factoring as in dual diagram
 	b := e // (w*(a**G));
 	a = dual b;
-	F.cache#bem#i = a;
+	F.cache#aMultiplier#i = a;
 	i = i-1;
 	);
-    return F.cache#bem#k;
+    return F.cache#aMultiplier#k;
     )
 
 -- this returns all multipliers in a list
-buchsbaumEisenbudMultipliers(ChainComplex) := List => F -> (
+aMultiplier(ChainComplex) := List => F -> (
     -- get the index of the last nonzero module of the resolution
     n := max F;
     while F_n == 0 do n = n-1;
-    toList apply(min(F)+1..n,k->bem(k,F))
+    toList apply(min(F)+1..n,k->aMultiplier(k,F))
     )
 
 -- Below is the iso of free modules Wedge^i F->Wedge^j F^* ** Wedge^(i+j) F
@@ -131,7 +130,7 @@ dualMultiplier = method(TypicalValue => Matrix)
 -- degrees of domain and codomain (via twist by a rank one module)
 dualMultiplier(ZZ,ChainComplex) := (k,F) -> (
     G := exteriorPower(rank F_(k-1),F_(k-1));
-    ((dual bem(k,F)) ** G) * exteriorDuality(rank F.dd_(k-1),k-1,F)
+    ((dual aMultiplier(k,F)) ** G) * exteriorDuality(rank F.dd_(k-1),k-1,F)
     )
 
 
@@ -171,7 +170,7 @@ lowerBEM = (j,k,F) -> (
 	fRank:=rank F_(k-1);
 	dRank1:=rank(F.dd_(k));
 	dRank2:=rank(F.dd_(k-1));
-	inda:=wedgeProduct(dRank1,j,F_(k-1))*((bem(k,F))**id_(exteriorPower(j,F_(k-1))));
+	inda:=wedgeProduct(dRank1,j,F_(k-1))*((aMultiplier(k,F))**id_(exteriorPower(j,F_(k-1))));
 	--wedgeD:= dual exteriorPower(dRank2-j,F.dd_(k-1));
 	w:=exteriorPower(dRank2-j,F.dd_(k-1));
 	extD:=exteriorDuality(dRank2-j,k-1,F);
@@ -207,7 +206,7 @@ doc ///
 
 doc ///
      Key
-     	  buchsbaumEisenbudMultipliers
+     	  aMultiplier
      Headline
      	  compute Buchsbaum-Eisenbud multipliers of a resolution
      Description
@@ -219,21 +218,21 @@ doc ///
 
 doc ///
      Key
-     	  "bem"
+     	  "aMultiplier"
      Headline
      	  compute Buchsbaum-Eisenbud multipliers of a resolution
      Description
      	  Text
-	       Use @TT "bem"@ as a synonym for @TO "buchsbaumEisenbudMultipliers"@.
+	       Use @TT "aMultiplier"@ as a synonym for @TO "aMultiplier"@.
 ///
 
 doc ///
      Key
-     	  (buchsbaumEisenbudMultipliers,ChainComplex)
+     	  (aMultiplier,ChainComplex)
      Headline
      	  compute Buchsbaum-Eisenbud multipliers of a resolution
      Usage
-     	  buchsbaumEisenbudMultipliers(F)
+     	  aMultiplier(F)
      Inputs
      	  F:ChainComplex
      Outputs
@@ -249,21 +248,21 @@ doc ///
 	       multipliers in increasing order.
 	       
 	       The results of the computation are stored in the
-	       cache of @TT "F"@ with the key @TT "bem"@.
+	       cache of @TT "F"@ with the key @TT "aMultiplier"@.
      	  Example
 	       R=QQ[x,y,z]
 	       K=koszul vars R
-	       buchsbaumEisenbudMultipliers(K)
-	       peek K.cache#bem
+	       aMultiplier(K)
+	       peek K.cache#aMultiplier
 ///
 
 doc ///
      Key
-     	  (buchsbaumEisenbudMultipliers,ZZ,ChainComplex)
+     	  (aMultiplier,ZZ,ChainComplex)
      Headline
      	  return the k-th Buchsbaum-Eisenbud multiplier of a free resolution
      Usage
-     	  buchsbaumEisenbudMultipliers(k,F)
+     	  aMultiplier(k,F)
      Inputs
      	  k:ZZ
      	  F:ChainComplex
@@ -283,8 +282,8 @@ doc ///
      	  Example
 	       R=QQ[x,y,z]
 	       K=koszul vars R
-	       buchsbaumEisenbudMultipliers(2,K)
-	       peek K.cache#bem
+	       aMultiplier(2,K)
+	       peek K.cache#aMultiplier
 ///
 
 doc ///
@@ -318,8 +317,8 @@ doc ///
 	       We can use the dual of a multiplier to check the
 	       First Structure Theorem holds.
      	  Example
-	       exteriorPower(rank K.dd_2,K.dd_2) == bem(2,K) * dualMultiplier(3,K)
-	       exteriorPower(rank K.dd_1,K.dd_1) == bem(1,K) * dualMultiplier(2,K)
+	       exteriorPower(rank K.dd_2,K.dd_2) == aMultiplier(2,K) * dualMultiplier(3,K)
+	       exteriorPower(rank K.dd_1,K.dd_1) == aMultiplier(1,K) * dualMultiplier(2,K)
 	       
 ///
 
