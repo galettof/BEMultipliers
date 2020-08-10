@@ -124,20 +124,6 @@ exteriorDuality(ZZ,Module) := (r,F) -> (
     	);
     )
 
--- this gives the duality for the k-th module in a free resolution
--- forming the iso of free modules Wedge^r F_k->Wedge^(n-r) F_k^*
--- where r is given by the user and n = rank F_k
-exteriorDuality(ZZ,ZZ,ChainComplex) := (r,k,F) -> (
-    --r := rank F.dd_k;
-    n := rank F_k;
-    -- need a rank one free module to approriately twist degrees
-    G := exteriorPower(n,F_k);
-    domain := exteriorPower(r,F_k);
-    codomain := exteriorPower(n-r,dual F_k) ** G;
-    M := promote(exteriorDuality(r,n),ring F);
-    map(codomain,domain,M)
-    )
-
 
 dualMultiplier = method(TypicalValue => Matrix)
 
