@@ -15,7 +15,6 @@ newPackage(
 export {
     "aMultiplier",--method
     "exteriorDuality",--method
-    "dualMultiplier",--method
     "lowerBEM"
     }
 
@@ -32,7 +31,7 @@ export {
 -- "Some structure theorems for finite free resolutions"
 -- The only difference is that in order to make each multiplier
 -- homogeneous we give its domain the appropriate degree
-aMultiplier = aMultiplier = method()
+aMultiplier = method()
 
 
 -- WARNING: currently no safety checks are implemented!
@@ -226,6 +225,39 @@ doc ///
 	       well (and stored).
      	  Example
 	       peek K.cache#aMultiplier
+///
+
+doc ///
+     Key
+     	  exteriorDuality
+     	  (exteriorDuality,ZZ,ZZ)
+     	  (exteriorDuality,ZZ,Module)
+     Headline
+     	  exterior duality isomorphism of free modules
+     Usage
+     	  exteriorDuality(k,n)
+     	  exteriorDuality(k,F)
+     Inputs
+     	  k:ZZ
+     	  F:Module
+     Outputs
+     	  :Matrix
+     Description
+     	  Text
+	       If @TT "F"@ is a free module of rank @TT "n"@,
+	       this module constructs the isomorphism
+	       $$\wedge^k F \to (\wedge^{n-k} F)^* \otimes \wedge^n F$$
+	       induced by the perfect pairing
+	       $$\wedge^k F \otimes \wedge^{n-k} F\to \wedge^n F.$$
+	       The form @TT "exteriorDuality(k,n)"@ produces a
+	       matrix over the integers, while the form
+	       @TT "exteriorDuality(k,F)"@ produces a matrix over
+	       the ring of the module @TT "F"@.
+     	  Example
+	       R=QQ[x,y,z]
+	       F=R^5
+	       exteriorDuality(2,5)
+	       exteriorDuality(2,F)
 ///
 
 end
