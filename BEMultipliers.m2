@@ -116,16 +116,6 @@ exteriorDuality(ZZ,Module) := (r,F) -> (
     )
 
 
-dualMultiplier = method(TypicalValue => Matrix)
-
--- returns the dual of a BE multiplier with the appropriate
--- degrees of domain and codomain (via twist by a rank one module)
-dualMultiplier(ZZ,ChainComplex) := (k,F) -> (
-    G := exteriorPower(rank F_(k-1),F_(k-1));
-    ((dual aMultiplier(k,F)) ** G) * exteriorDuality(rank F.dd_(k-1),k-1,F)
-    )
-
-
 -------------------------------------------------------------------
 -------------------------------------------------------------------
 -- Unexported functions
