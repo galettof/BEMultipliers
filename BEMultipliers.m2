@@ -78,14 +78,6 @@ aMultiplier(ZZ,ChainComplex) := Matrix => (k,F) -> (
     return F.cache#aMultiplier#k;
     )
 
--- this returns all multipliers in a list
-aMultiplier(ChainComplex) := List => F -> (
-    -- get the index of the last nonzero module of the resolution
-    n := max F;
-    while F_n == 0 do n = n-1;
-    toList apply(min(F)+1..n,k->aMultiplier(k,F))
-    )
-
 -- Below is the iso of free modules Wedge^i F->Wedge^j F^* ** Wedge^(i+j) F
 -- from the pairing Wedge^i F ** Wedge^j F->Wedge^(i+j) F
 -- where F is free of rank i+j.
