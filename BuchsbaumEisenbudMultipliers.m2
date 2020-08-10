@@ -1,5 +1,5 @@
 newPackage(
-     "BEMultipliers",
+     "BuchsbaumEisenbudMultipliers",
      Version => "0.2",
      Date => "August 24, 2019",
      AuxiliaryFiles => false,
@@ -171,12 +171,12 @@ lowerBEM = (j,k,F) -> (
 beginDocumentation()
 doc ///
     Key
-    	BEMultipliers
+    	BuchsbaumEisenbudMultipliers
     Headline
     	Buchsbaum-Eisenbud multipliers of free resolutions
     Description
     	Text
-	    @EM "BEMultipliers"@ is a Macaulay2 package that
+	    @EM "BuchsbaumEisenbudMultipliers"@ is a Macaulay2 package that
 	    can be used to compute Buchsbaum-Eisenbud multipliers
 	    of minimal free resolutions of modules over polynomial
 	    rings as introduced in
@@ -263,7 +263,7 @@ doc ///
 end
 
 
-uninstallPackage "BEMultipliers"
+uninstallPackage "BuchsbaumEisenbudMultipliers"
 restart
-installPackage "BEMultipliers"
+installPackage "BuchsbaumEisenbudMultipliers"
 viewHelp

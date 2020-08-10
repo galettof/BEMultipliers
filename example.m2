@@ -1,6 +1,6 @@
 -- example: Koszul complex
 restart
-needsPackage "BEMultipliers"
+needsPackage "BuchsbaumEisenbudMultipliers"
 A=QQ[x,y,z]
 K=koszul vars A
 -- compute multipliers, returns a list
@@ -25,7 +25,7 @@ lowerBEM(1,3,K)
 
 -- example: Eagon-Northcott of 2x4 matrix
 restart
-needsPackage "BEMultipliers"
+needsPackage "BuchsbaumEisenbudMultipliers"
 A=QQ[x_(1,1)..x_(2,4)]
 G=transpose genericMatrix(A,4,2)
 I=minors(2,G)
@@ -43,7 +43,7 @@ bem(1,RI) * dualMultiplier(2,RI)
 
 -- example: all squarefree monomials of degree 2
 restart
-needsPackage "BEMultipliers"
+needsPackage "BuchsbaumEisenbudMultipliers"
 A=QQ[x_1..x_4]
 I=ideal(subsets(gens A,2)/product)
 RI=res I
@@ -60,7 +60,7 @@ bem(1,RI) * dualMultiplier(2,RI)
 
 -- example: B-E's resolution of 6x6 pfaffians of 7x7 skew matrix
 restart
-needsPackage "BEMultipliers"
+needsPackage "BuchsbaumEisenbudMultipliers"
 A=QQ[x_(1,2)..x_(1,7),x_(2,3)..x_(2,7),x_(3,4)..x_(3,7),
     x_(4,5)..x_(4,7),x_(5,6)..x_(5,7),x_(6,7)]
 G=genericSkewMatrix(A,7)
@@ -78,7 +78,7 @@ bem(1,RI) * dualMultiplier(2,RI)
 
 -- example: bigger Koszul complex
 restart
-needsPackage "BEMultipliers"
+needsPackage "BuchsbaumEisenbudMultipliers"
 A=QQ[x_1..x_4]
 K=koszul vars A
 -- compute multipliers, returns a list
