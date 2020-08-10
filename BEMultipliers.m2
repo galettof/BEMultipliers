@@ -189,60 +189,9 @@ doc ///
 doc ///
      Key
      	  aMultiplier
-     Headline
-     	  compute Buchsbaum-Eisenbud multipliers of a resolution
-     Description
-     	  Text
-	       Use this method to compute Buchsbaum-Eisenbud
-	       multipliers of a free resolution over a polynomial
-	       ring.
-///
-
-doc ///
-     Key
-     	  "aMultiplier"
-     Headline
-     	  compute Buchsbaum-Eisenbud multipliers of a resolution
-     Description
-     	  Text
-	       Use @TT "aMultiplier"@ as a synonym for @TO "aMultiplier"@.
-///
-
-doc ///
-     Key
-     	  (aMultiplier,ChainComplex)
-     Headline
-     	  compute Buchsbaum-Eisenbud multipliers of a resolution
-     Usage
-     	  aMultiplier(F)
-     Inputs
-     	  F:ChainComplex
-     Outputs
-     	  :List
-     Description
-     	  Text
-	       Use this method to compute all Buchsbaum-Eisenbud
-	       multipliers of a free resolution @TT "F"@ over a
-	       polynomial ring. By default, Macaulay2 does not
-	       check that @TT "F"@ is actually a resolution.
-	       
-	       The output is a list containing all the
-	       multipliers in increasing order.
-	       
-	       The results of the computation are stored in the
-	       cache of @TT "F"@ with the key @TT "aMultiplier"@.
-     	  Example
-	       R=QQ[x,y,z]
-	       K=koszul vars R
-	       aMultiplier(K)
-	       peek K.cache#aMultiplier
-///
-
-doc ///
-     Key
      	  (aMultiplier,ZZ,ChainComplex)
      Headline
-     	  return the k-th Buchsbaum-Eisenbud multiplier of a free resolution
+     	  compute a Buchsbaum-Eisenbud multiplier
      Usage
      	  aMultiplier(k,F)
      Inputs
@@ -252,56 +201,31 @@ doc ///
      	  :Matrix
      Description
      	  Text
-	       Use this method to return a single Buchsbaum-Eisenbud
+	       Use this method to compute a Buchsbaum-Eisenbud
 	       multiplier of a free resolution @TT "F"@ over a
 	       polynomial ring. By default, Macaulay2 does not
 	       check that @TT "F"@ is actually a resolution.
-	       Note that the definition of the multipliers is
-	       recursive, so all the previous ones are computed as
-	       well (and stored).
-	       
 	       The output is the matrix of the k-th multiplier.
      	  Example
 	       R=QQ[x,y,z]
 	       K=koszul vars R
 	       aMultiplier(2,K)
+     	  Text
+	       We can check this multiplier satisfies the First
+	       Structure Theorem of Buchsbaum and Eisenbud.
+	       Note the exterior duality isomorphism must be made
+	       explicit in order for the equality to hold.
+	       The module @TT "E"@ is a rank one graded free
+	       module that twists the map into the right degree.
+     	  Example
+	       E=exteriorPower(rank K_2,K_2)
+	       exteriorPower(rank K.dd_2,K.dd_2) == aMultiplier(2,K) * ((dual aMultiplier(3,K))**E) * exteriorDuality(rank K.dd_2,K_2)
+     	  Text
+	       Note that the definition of the multipliers is
+	       recursive, so all the previous ones are computed as
+	       well (and stored).
+     	  Example
 	       peek K.cache#aMultiplier
-///
-
-doc ///
-     Key
-     	  dualMultiplier
-	  (dualMultiplier,ZZ,ChainComplex)
-     Headline
-     	  compute the dual of a Buchsbaum-Eisenbud multiplier
-     Usage
-     	  dualMultiplier(k,F)
-     Inputs
-     	  k:ZZ
-     	  F:ChainComplex
-     Outputs
-     	  :Matrix
-     Description
-     	  Text
-	       Use this method to compute the dual of a
-	       Buchsbaum-Eisenbud multipliers of a free
-	       resolution over a polynomial ring. The dual of a
-	       multiplier is the dual as a module homomorphism but
-	       shifted in the appropriate degree. This is necessary
-	       in order to make the commutative diagram of the
-	       First Structure Theorem of Buchsbaum and Eisenbud
-	       a diagram of graded modules.
-     	  Example
-	       R=QQ[x,y,z]
-	       K=koszul vars R
-	       dualMultiplier(3,K)
-     	  Text
-	       We can use the dual of a multiplier to check the
-	       First Structure Theorem holds.
-     	  Example
-	       exteriorPower(rank K.dd_2,K.dd_2) == aMultiplier(2,K) * dualMultiplier(3,K)
-	       exteriorPower(rank K.dd_1,K.dd_1) == aMultiplier(1,K) * dualMultiplier(2,K)
-	       
 ///
 
 end
