@@ -255,6 +255,21 @@ doc ///
 ///
 
 doc ///
+    Key
+    	ComputeRanks
+	[aMultiplier,ComputeRanks]
+    Headline
+    	Explicitly compute ranks of differentials
+    Description
+    	Text
+	    The methods @TO "aMultiplier"@ and @TT "cMultiplier"@
+	    compute the ranks of the differentials in a resolution
+	    using the Buchsbaum-Eisenbud exactness criterion.
+	    Setting this optional argument to @TO "true"@ computes
+	    ranks directly using the function @TO "rank"@.
+///
+
+doc ///
      Key
      	  exteriorDuality
      	  (exteriorDuality,ZZ,ZZ)
