@@ -17,6 +17,7 @@ newPackage(
 
 export {
     "aMultiplier",--method
+    "ComputeRanks",--option
     "exteriorDuality",--method
     "lowerBEM"
     }
@@ -34,13 +35,13 @@ export {
 -- "Some structure theorems for finite free resolutions"
 -- The only difference is that in order to make each multiplier
 -- homogeneous we give its domain the appropriate degree
-aMultiplier = method()
+aMultiplier = method(Options => {ComputeRanks => false})
 
 
 -- WARNING: currently no safety checks are implemented!
 
 -- this computes up to the k-th multiplier and returns it
-aMultiplier(ZZ,ChainComplex) := Matrix => (k,F) -> (
+aMultiplier(ZZ,ChainComplex) := Matrix => op -> (k,F) -> (
     -- get the index of the last nonzero module of the resolution
     n := max F;
     while F_n == 0 do n = n-1;
@@ -58,18 +59,28 @@ aMultiplier(ZZ,ChainComplex) := Matrix => (k,F) -> (
     -- now we start the actual computation
     -- the a will house the next multiplier
     -- the last multiplier is simply an exterior power
-    a := exteriorPower(rank F.dd_n,F.dd_n);
+    if op.ComputeRanks then (
+	r := rank F.dd_n;
+	) else (
+	r = rank(n,F);
+	);
+    a := exteriorPower(r,F.dd_n);
     F.cache#aMultiplier#n = a;
     -- i is a running index
     i := n-1;
     while (i >= k) do (
+    	if op.ComputeRanks then (
+	    r = rank F.dd_i;
+	    ) else (
+	    r = rank(i,F);
+	    );
 	-- this code doesn't use the diagram of B-E's paper
 	-- instead it uses its dual and accounts for degrees.
 	-- e's are the exterior powers of the differentials
-	e := dual exteriorPower(rank F.dd_i,F.dd_i);
+	e := dual exteriorPower(r,F.dd_i);
 	-- G is a rank one module generated in the
 	-- appropriate degree to make everything homogeneous.
-	w := dual exteriorDuality(rank F.dd_i,F_i);
+	w := dual exteriorDuality(r,F_i);
 	G := dual exteriorPower(rank F_i,F_i);
 	-- get next multiplier by factoring as in dual diagram
 	b := e // (w*(a**G));
@@ -137,6 +148,19 @@ numberOfInversions = (u,v) -> (
     return c;
     )
 
+
+-- compute the ranks of the differentials in a free resolution
+-- using the Buchsbaum-Eisenbud exactness criterion
+-- F is the resolution, k is for the k-th differential
+rank(ZZ,ChainComplex) := (k,F) -> (
+    n := max F;
+    r := rank F_n;
+    while n>k do (
+	n = n-1;
+	r = rank F_n - r;
+	);
+    return r;
+    )
 
 
 -------------------------------------------------------------------
