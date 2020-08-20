@@ -93,8 +93,38 @@ aMultiplier(ZZ,ChainComplex) := Matrix => op -> (k,F) -> (
 
 -- this computes the map a_j^k for lower order multipliers
 aMultiplier(ZZ,ZZ,ChainComplex) := Matrix => op -> (j,k,F) -> (
-    aMultiplier(k,F) ** id_(exteriorPower(j,F_(k-1)))
+    -- check if stored and return
+    if F.cache#?aMultiplier then (
+	if F.cache#aMultiplier#?(j,k) then return F.cache#aMultiplier#(j,k);
+	);
+    -- if F.cache#aMultiplier does not exist, it is created
+    -- when aMultiplier is called
+    m := aMultiplier(k,F) ** id_(exteriorPower(j,F_(k-1)));
+    return F.cache#aMultiplier#(j,k) = m;
     )
+
+-- Weyman's lower order multipliers
+cMultiplier = method(Options => {ComputeRanks => false})
+
+cMultiplier(ZZ,ZZ,ChainComplex) := Matrix => op -> (j,k,F) -> (
+    if not (j-1)*(length F)<=j*(k-1)-2 then (
+	error"Not defined for chosen parameters";
+	)
+    else (
+    -- if (j-1)*(length F)<=j*(k-1)-2 then (
+	fRank:=rank F_(k-1);
+	dRank1:=rank(F.dd_(k));
+	dRank2:=rank(F.dd_(k-1));
+	inda:=wedgeProduct(dRank1,j,F_(k-1))*((aMultiplier(k,F))**id_(exteriorPower(j,F_(k-1))));
+	--wedgeD:= dual exteriorPower(dRank2-j,F.dd_(k-1));
+	w:=exteriorPower(dRank2-j,F.dd_(k-1));
+	extD:=exteriorDuality(dRank2-j,k-1,F);
+	G := exteriorPower(rank F_(k-1),F_(k-1));
+	return (((dual (w*extD))**G)//inda);
+	--return dual((extD*(matrix entries wedgeD))//(matrix entries inda));
+	);
+    )
+
 
 -- Below is the iso of free modules Wedge^i F->Wedge^j F^* ** Wedge^(i+j) F
 -- from the pairing Wedge^i F ** Wedge^j F->Wedge^(i+j) F

@@ -19,6 +19,7 @@ E1=exteriorPower(rank K_1,K_1)
 exteriorPower(rank K.dd_1,K.dd_1) == aMultiplier(1,K) * ((dual aMultiplier(2,K))**E1) * exteriorDuality(rank K.dd_1,K_1)
 
 -- let's compute all lower order multipliers
+aMultiplier(1,3,K)
 lowerBEM(0,1,K)
 lowerBEM(0,2,K)
 lowerBEM(0,3,K)
