@@ -91,6 +91,11 @@ aMultiplier(ZZ,ChainComplex) := Matrix => op -> (k,F) -> (
     return F.cache#aMultiplier#k;
     )
 
+-- this computes the map a_j^k for lower order multipliers
+aMultiplier(ZZ,ZZ,ChainComplex) := Matrix => op -> (j,k,F) -> (
+    aMultiplier(k,F) ** id_(exteriorPower(j,F_(k-1)))
+    )
+
 -- Below is the iso of free modules Wedge^i F->Wedge^j F^* ** Wedge^(i+j) F
 -- from the pairing Wedge^i F ** Wedge^j F->Wedge^(i+j) F
 -- where F is free of rank i+j.
