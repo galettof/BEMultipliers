@@ -17,6 +17,7 @@ newPackage(
 
 export {
     "aMultiplier",--method
+    "cMultiplier",--method
     "ComputeRanks",--option
     "exteriorDuality",--method
     "lowerBEM"
@@ -99,6 +100,7 @@ aMultiplier(ZZ,ZZ,ChainComplex) := Matrix => op -> (j,k,F) -> (
 	);
     -- if F.cache#aMultiplier does not exist, it is created
     -- when aMultiplier is called
+    -- EXT MULTIPLICATION IS MISSING
     m := aMultiplier(k,F) ** id_(exteriorPower(j,F_(k-1)));
     return F.cache#aMultiplier#(j,k) = m;
     )
@@ -111,17 +113,24 @@ cMultiplier(ZZ,ZZ,ChainComplex) := Matrix => op -> (j,k,F) -> (
 	error"Not defined for chosen parameters";
 	)
     else (
-    -- if (j-1)*(length F)<=j*(k-1)-2 then (
-	fRank:=rank F_(k-1);
-	dRank1:=rank(F.dd_(k));
-	dRank2:=rank(F.dd_(k-1));
-	inda:=wedgeProduct(dRank1,j,F_(k-1))*((aMultiplier(k,F))**id_(exteriorPower(j,F_(k-1))));
-	--wedgeD:= dual exteriorPower(dRank2-j,F.dd_(k-1));
-	w:=exteriorPower(dRank2-j,F.dd_(k-1));
-	extD:=exteriorDuality(dRank2-j,k-1,F);
-	G := exteriorPower(rank F_(k-1),F_(k-1));
-	return (((dual (w*extD))**G)//inda);
-	--return dual((extD*(matrix entries wedgeD))//(matrix entries inda));
+    	-- check if stored and return
+    	if F.cache#?cMultiplier then (
+	    if F.cache#cMultiplier#?(j,k) then return F.cache#cMultiplier#(j,k);
+	    )
+    	else (
+	    F.cache#cMultiplier = new MutableHashTable;
+	    );
+    	if op.ComputeRanks then (
+	    r := rank F.dd_(k-1);
+	    ) else (
+	    r = rank(k-1,F);
+	    );
+	-- see aMultiplier for comments on this code
+	e := dual exteriorPower(r-j,F.dd_(k-1));
+	w := dual exteriorDuality(r-j,F_(k-1));
+	G := dual exteriorPower(rank F_(k-1),F_(k-1));
+	b := e // (w*(aMultiplier(j,k,F)**G));
+	return F.cache#cMultiplier#(j,k) = dual b;
 	);
     )
 
