@@ -101,7 +101,7 @@ aMultiplier(ZZ,ZZ,ChainComplex) := Matrix => op -> (j,k,F) -> (
     -- if F.cache#aMultiplier does not exist, it is created
     -- when aMultiplier is called
     -- EXT MULTIPLICATION IS MISSING
-    m := aMultiplier(k,F) ** id_(exteriorPower(j,F_(k-1)));
+    m := wedgeProduct(rank(k,F),j,F_(k-1)) * (aMultiplier(k,F) ** id_(exteriorPower(j,F_(k-1))));
     return F.cache#aMultiplier#(j,k) = m;
     )
 

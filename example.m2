@@ -12,19 +12,33 @@ elapsedTime aMultiplier(1,K)
 -- other multipliers
 aMultiplier(3,K)
 aMultiplier(2,K)
--- let's check the structure theorem
+-- let's check the first structure theorem
 E2=exteriorPower(rank K_2,K_2)
 exteriorPower(rank K.dd_2,K.dd_2) == aMultiplier(2,K) * ((dual aMultiplier(3,K))**E2) * exteriorDuality(rank K.dd_2,K_2)
 E1=exteriorPower(rank K_1,K_1)
 exteriorPower(rank K.dd_1,K.dd_1) == aMultiplier(1,K) * ((dual aMultiplier(2,K))**E1) * exteriorDuality(rank K.dd_1,K_1)
 -- let's compute all lower order multipliers
+aMultiplier(0,1,K)
+cMultiplier(0,1,K)
+aMultiplier(0,2,K)
+cMultiplier(0,2,K)
+aMultiplier(0,3,K)
+cMultiplier(0,3,K)
 aMultiplier(1,3,K)
 cMultiplier(1,3,K)
-
-lowerBEM(0,1,K)
-lowerBEM(0,2,K)
-lowerBEM(0,3,K)
-lowerBEM(1,3,K)
+-- let's check the second structure theorem
+j=0,k=1
+E=exteriorPower(rank K_(k-1),K_(k-1))
+exteriorPower(rank(k-1,K)-j,K.dd_(k-1)) == cMultiplier(j,k,K) * ((dual aMultiplier(j,k,K))**E) * exteriorDuality(rank(k-1,K)-j,K_(k-1))
+j=0,k=2
+E=exteriorPower(rank K_(k-1),K_(k-1))
+exteriorPower(rank(k-1,K)-j,K.dd_(k-1)) == cMultiplier(j,k,K) * ((dual aMultiplier(j,k,K))**E) * exteriorDuality(rank(k-1,K)-j,K_(k-1))
+j=0,k=3
+E=exteriorPower(rank K_(k-1),K_(k-1))
+exteriorPower(rank(k-1,K)-j,K.dd_(k-1)) == cMultiplier(j,k,K) * ((dual aMultiplier(j,k,K))**E) * exteriorDuality(rank(k-1,K)-j,K_(k-1))
+j=1,k=3
+E=exteriorPower(rank K_(k-1),K_(k-1))
+exteriorPower(rank(k-1,K)-j,K.dd_(k-1)) == cMultiplier(j,k,K) * ((dual aMultiplier(j,k,K))**E) * exteriorDuality(rank(k-1,K)-j,K_(k-1))
 
 -- example: Eagon-Northcott of 2x4 matrix
 restart
@@ -47,6 +61,28 @@ E2=exteriorPower(rank RI_2,RI_2)
 exteriorPower(rank RI.dd_2,RI.dd_2) == aMultiplier(2,RI) * ((dual aMultiplier(3,RI))**E2) * exteriorDuality(rank RI.dd_2,RI_2)
 E1=exteriorPower(rank RI_1,RI_1)
 exteriorPower(rank RI.dd_1,RI.dd_1) == aMultiplier(1,RI) * ((dual aMultiplier(2,RI))**E1) * exteriorDuality(rank RI.dd_1,RI_1)
+-- let's compute all lower order multipliers
+aMultiplier(0,1,RI)
+cMultiplier(0,1,RI)
+aMultiplier(0,2,RI)
+cMultiplier(0,2,RI)
+aMultiplier(0,3,RI)
+cMultiplier(0,3,RI)
+aMultiplier(1,3,RI)
+cMultiplier(1,3,RI)
+-- let's check the second structure theorem
+j=0,k=1
+E=exteriorPower(rank RI_(k-1),RI_(k-1))
+exteriorPower(rank(k-1,RI)-j,RI.dd_(k-1)) == cMultiplier(j,k,RI) * ((dual aMultiplier(j,k,RI))**E) * exteriorDuality(rank(k-1,RI)-j,RI_(k-1))
+j=0,k=2
+E=exteriorPower(rank RI_(k-1),RI_(k-1))
+exteriorPower(rank(k-1,RI)-j,RI.dd_(k-1)) == cMultiplier(j,k,RI) * ((dual aMultiplier(j,k,RI))**E) * exteriorDuality(rank(k-1,RI)-j,RI_(k-1))
+j=0,k=3
+E=exteriorPower(rank RI_(k-1),RI_(k-1))
+exteriorPower(rank(k-1,RI)-j,RI.dd_(k-1)) == cMultiplier(j,k,RI) * ((dual aMultiplier(j,k,RI))**E) * exteriorDuality(rank(k-1,RI)-j,RI_(k-1))
+j=1,k=3
+E=exteriorPower(rank RI_(k-1),RI_(k-1))
+exteriorPower(rank(k-1,RI)-j,RI.dd_(k-1)) == cMultiplier(j,k,RI) * ((dual aMultiplier(j,k,RI))**E) * exteriorDuality(rank(k-1,RI)-j,RI_(k-1))
 
 
 -- example: all squarefree monomials of degree 2
@@ -93,6 +129,28 @@ E2=exteriorPower(rank RI_2,RI_2)
 exteriorPower(rank RI.dd_2,RI.dd_2) == aMultiplier(2,RI) * ((dual aMultiplier(3,RI))**E2) * exteriorDuality(rank RI.dd_2,RI_2)
 E1=exteriorPower(rank RI_1,RI_1)
 exteriorPower(rank RI.dd_1,RI.dd_1) == aMultiplier(1,RI) * ((dual aMultiplier(2,RI))**E1) * exteriorDuality(rank RI.dd_1,RI_1)
+-- let's compute all lower order multipliers
+aMultiplier(0,1,RI)
+cMultiplier(0,1,RI)
+aMultiplier(0,2,RI)
+cMultiplier(0,2,RI)
+aMultiplier(0,3,RI)
+cMultiplier(0,3,RI)
+aMultiplier(1,3,RI)
+cMultiplier(1,3,RI)
+-- let's check the second structure theorem
+j=0,k=1
+E=exteriorPower(rank RI_(k-1),RI_(k-1))
+exteriorPower(rank(k-1,RI)-j,RI.dd_(k-1)) == cMultiplier(j,k,RI) * ((dual aMultiplier(j,k,RI))**E) * exteriorDuality(rank(k-1,RI)-j,RI_(k-1))
+j=0,k=2
+E=exteriorPower(rank RI_(k-1),RI_(k-1))
+exteriorPower(rank(k-1,RI)-j,RI.dd_(k-1)) == cMultiplier(j,k,RI) * ((dual aMultiplier(j,k,RI))**E) * exteriorDuality(rank(k-1,RI)-j,RI_(k-1))
+j=0,k=3
+E=exteriorPower(rank RI_(k-1),RI_(k-1))
+exteriorPower(rank(k-1,RI)-j,RI.dd_(k-1)) == cMultiplier(j,k,RI) * ((dual aMultiplier(j,k,RI))**E) * exteriorDuality(rank(k-1,RI)-j,RI_(k-1))
+j=1,k=3
+E=exteriorPower(rank RI_(k-1),RI_(k-1))
+exteriorPower(rank(k-1,RI)-j,RI.dd_(k-1)) == cMultiplier(j,k,RI) * ((dual aMultiplier(j,k,RI))**E) * exteriorDuality(rank(k-1,RI)-j,RI_(k-1))
 
 -- example: bigger Koszul complex
 restart
