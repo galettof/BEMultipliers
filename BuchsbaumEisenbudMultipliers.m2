@@ -19,8 +19,7 @@ export {
     "aMultiplier",--method
     "cMultiplier",--method
     "ComputeRanks",--option
-    "exteriorDuality",--method
-    "lowerBEM"
+    "exteriorDuality"--method
     }
 
 
@@ -209,31 +208,6 @@ rank(ZZ,ChainComplex) := (k,F) -> (
 
 -------------------------------------------------------------------
 -------------------------------------------------------------------
--- Code below provided by Keller VandeBogert on 8/4/2020
--------------------------------------------------------------------
--------------------------------------------------------------------
-
-lowerBEM = (j,k,F) -> (
-    if not (j-1)*(length F)<=j*(k-1)-2 then (
-	error"Not defined for chosen parameters";
-	)
-    else (
-    -- if (j-1)*(length F)<=j*(k-1)-2 then (
-	fRank:=rank F_(k-1);
-	dRank1:=rank(F.dd_(k));
-	dRank2:=rank(F.dd_(k-1));
-	inda:=wedgeProduct(dRank1,j,F_(k-1))*((aMultiplier(k,F))**id_(exteriorPower(j,F_(k-1))));
-	--wedgeD:= dual exteriorPower(dRank2-j,F.dd_(k-1));
-	w:=exteriorPower(dRank2-j,F.dd_(k-1));
-	extD:=exteriorDuality(dRank2-j,k-1,F);
-	G := exteriorPower(rank F_(k-1),F_(k-1));
-	return (((dual (w*extD))**G)//inda);
-	--return dual((extD*(matrix entries wedgeD))//(matrix entries inda));
-	);
-)
-
--------------------------------------------------------------------
--------------------------------------------------------------------
 -- Documentation
 -------------------------------------------------------------------
 -------------------------------------------------------------------
@@ -299,6 +273,49 @@ doc ///
 ///
 
 doc ///
+     Key
+     	  (aMultiplier,ZZ,ZZ,ChainComplex)
+     Headline
+     	  compute a Buchsbaum-Eisenbud multiplier
+     Usage
+     	  aMultiplier(j,k,F)
+     Inputs
+     	  j:ZZ
+     	  k:ZZ
+     	  F:ChainComplex
+     Outputs
+     	  :Matrix
+     Description
+     	  Text
+	       Use this method to compute a Buchsbaum-Eisenbud
+	       multiplier of a free resolution @TT "F"@ over a
+	       polynomial ring. By default, Macaulay2 does not
+	       check that @TT "F"@ is actually a resolution.
+	       The output is the matrix of the k-th multiplier.
+     	  Example
+	       R=QQ[x_1..x_4]
+	       I=ideal apply(subsets(gens R,2),product)
+	       RI=res I
+	       aMultiplier(2,RI)
+     	  Text
+	       We can check this multiplier satisfies the First
+	       Structure Theorem of Buchsbaum and Eisenbud.
+	       Note the exterior duality isomorphism must be made
+	       explicit in order for the equality to hold.
+	       The module @TT "E"@ is a rank one graded free
+	       module that twists the map into the right degree.
+     	  Example
+	       E=exteriorPower(rank RI_2,RI_2)
+	       exteriorPower(rank RI.dd_2,RI.dd_2) == aMultiplier(2,RI) * ((dual aMultiplier(3,RI))**E) * exteriorDuality(rank RI.dd_2,RI_2)
+     	  Text
+	       Note that the definition of the multipliers is
+	       recursive, so all the previous ones are computed as
+	       well (and stored).
+     	  Example
+	       peek RI.cache#aMultiplier
+///
+
+doc ///
     Key
     	ComputeRanks
 	[aMultiplier,ComputeRanks]
@@ -352,4 +369,4 @@ end
 uninstallPackage "BuchsbaumEisenbudMultipliers"
 restart
 installPackage "BuchsbaumEisenbudMultipliers"
-viewHelp
+installPackage("BuchsbaumEisenbudMultipliers",RemakeAllDocumentation=>true)
