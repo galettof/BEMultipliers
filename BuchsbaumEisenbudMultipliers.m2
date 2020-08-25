@@ -1,7 +1,7 @@
 newPackage(
      "BuchsbaumEisenbudMultipliers",
-     Version => "0.2",
-     Date => "August 24, 2019",
+     Version => "0.3",
+     Date => "August 24, 2020",
      AuxiliaryFiles => false,
      Authors => {{Name => "Federico Galetto",
      	       Email => "galetto.federico@gmail.com",
@@ -222,17 +222,39 @@ doc ///
     Description
     	Text
 	    @EM "BuchsbaumEisenbudMultipliers"@ is a Macaulay2 package that
-	    can be used to compute Buchsbaum-Eisenbud multipliers
-	    of minimal free resolutions of modules over polynomial
-	    rings as introduced in
+	    can be used to compute Buchsbaum-Eisenbud and Weyman
+	    multipliers of graded minimal free resolutions over
+	    polynomial rings as introduced in
 	    @HREF("https://doi.org/10.1016/S0001-8708(74)80019-8",
 	    "Buchsbaum, Eisenbud - Some structure theorems for
-	    finite free resolutions")@.
+	    finite free resolutions")@ and
+	    @HREF("https://doi.org/10.1016/0021-8693(79)90164-9",
+		"Weyman - Resolutions of the Exterior and Symmetric Powers of a Module")@.
 ///
 
 doc ///
      Key
      	  aMultiplier
+     Headline
+     	  compute a Buchsbaum-Eisenbud multiplier
+     Usage
+     	  aMultiplier(k,F)
+     	  aMultiplier(j,k,F)
+     Inputs
+     	  j:ZZ
+     	  k:ZZ
+     	  F:ChainComplex
+     Outputs
+     	  :Matrix
+     Description
+     	  Text
+	       This method is used to compute Buchsbaum-Eisenbud
+	       multipliers of a free resolution @TT "F"@ over a
+	       polynomial ring. See specific functions for details.
+///
+
+doc ///
+     Key
      	  (aMultiplier,ZZ,ChainComplex)
      Headline
      	  compute a Buchsbaum-Eisenbud multiplier
@@ -246,52 +268,13 @@ doc ///
      Description
      	  Text
 	       Use this method to compute a Buchsbaum-Eisenbud
-	       multiplier of a free resolution @TT "F"@ over a
-	       polynomial ring. By default, Macaulay2 does not
-	       check that @TT "F"@ is actually a resolution.
-	       The output is the matrix of the k-th multiplier.
-     	  Example
-	       R=QQ[x,y,z]
-	       K=koszul vars R
-	       aMultiplier(2,K)
-     	  Text
-	       We can check this multiplier satisfies the First
-	       Structure Theorem of Buchsbaum and Eisenbud.
-	       Note the exterior duality isomorphism must be made
-	       explicit in order for the equality to hold.
-	       The module @TT "E"@ is a rank one graded free
-	       module that twists the map into the right degree.
-     	  Example
-	       E=exteriorPower(rank K_2,K_2)
-	       exteriorPower(rank K.dd_2,K.dd_2) == aMultiplier(2,K) * ((dual aMultiplier(3,K))**E) * exteriorDuality(rank K.dd_2,K_2)
-     	  Text
-	       Note that the definition of the multipliers is
-	       recursive, so all the previous ones are computed as
-	       well (and stored).
-     	  Example
-	       peek K.cache#aMultiplier
-///
-
-doc ///
-     Key
-     	  (aMultiplier,ZZ,ZZ,ChainComplex)
-     Headline
-     	  compute a Buchsbaum-Eisenbud multiplier
-     Usage
-     	  aMultiplier(j,k,F)
-     Inputs
-     	  j:ZZ
-     	  k:ZZ
-     	  F:ChainComplex
-     Outputs
-     	  :Matrix
-     Description
-     	  Text
-	       Use this method to compute a Buchsbaum-Eisenbud
-	       multiplier of a free resolution @TT "F"@ over a
-	       polynomial ring. By default, Macaulay2 does not
-	       check that @TT "F"@ is actually a resolution.
-	       The output is the matrix of the k-th multiplier.
+	       multiplier $a_k$ of a free resolution @TT "F"@ over a
+	       polynomial ring. For reference, the multiplier $a_k$
+	       is defined in the First Structure Theorem (Theorem 3.1) of 
+	       @HREF("https://doi.org/10.1016/S0001-8708(74)80019-8",
+		   "Buchsbaum, Eisenbud - Some structure theorems for
+	       finite free resolutions")@.
+	       The output is the matrix of the multiplier $a_k$.
      	  Example
 	       R=QQ[x_1..x_4]
 	       I=ideal apply(subsets(gens R,2),product)
@@ -313,17 +296,103 @@ doc ///
 	       well (and stored).
      	  Example
 	       peek RI.cache#aMultiplier
+    Caveat
+	       By default, Macaulay2 does not
+	       check that @TT "F"@ is actually a resolution.
+///
+
+doc ///
+     Key
+     	  (aMultiplier,ZZ,ZZ,ChainComplex)
+     Headline
+     	  compute a Buchsbaum-Eisenbud multiplier
+     Usage
+     	  aMultiplier(j,k,F)
+     Inputs
+     	  j:ZZ
+     	  k:ZZ
+     	  F:ChainComplex
+     Outputs
+     	  :Matrix
+     Description
+     	  Text
+	       Use this method to compute a Buchsbaum-Eisenbud
+	       multiplier $a^{(j)}_k$ of a free resolution @TT "F"@ over a
+	       polynomial ring. For reference, the multiplier $a^{(j)}_k$
+	       is defined on page 130 of 
+	       @HREF("https://doi.org/10.1016/S0001-8708(74)80019-8",
+		   "Buchsbaum, Eisenbud - Some structure theorems for
+	       finite free resolutions")@.
+	       The output is the matrix of the multiplier $a^{(j)}_k$.
+     	  Example
+	       R=QQ[x_1..x_4]
+	       I=ideal apply(subsets(gens R,2),product)
+	       RI=res I
+	       aMultiplier(1,3,RI)
+    Caveat
+	       By default, Macaulay2 does not
+	       check that @TT "F"@ is actually a resolution.
+///
+
+doc ///
+     Key
+     	  cMultiplier
+     	  (cMultiplier,ZZ,ZZ,ChainComplex)
+     Headline
+     	  compute a lower order Weyman multiplier
+     Usage
+     	  cMultiplier(j,k,F)
+     Inputs
+     	  j:ZZ
+     	  k:ZZ
+     	  F:ChainComplex
+     Outputs
+     	  :Matrix
+     Description
+     	  Text
+	       Use this method to compute a lower order Weyman
+	       multiplier $c^{(j)}_k$ of a free resolution @TT "F"@ over a
+	       polynomial ring. For reference, the existence of
+	       the multiplier $c^{(j)}_k$
+	       is conjectured in Conjecture 10.1 of
+	       @HREF("https://doi.org/10.1016/S0001-8708(74)80019-8",
+		   "Buchsbaum, Eisenbud - Some structure theorems for
+	       finite free resolutions")@.
+	       The conjecture is proven in Theorem 2 of
+	       @HREF("https://doi.org/10.1016/0021-8693(79)90164-9",
+		   "Weyman - Resolutions of the Exterior and Symmetric Powers of a Module")@.
+	       The output is the matrix of the multiplier $c^{(j)}_k$.
+     	  Example
+	       R=QQ[x_1..x_4]
+	       I=ideal apply(subsets(gens R,2),product)
+	       RI=res I
+	       cMultiplier(1,3,RI)
+     	  Text
+	       We can check this multiplier satisfies the Weyman's
+	       theorem on lower order minors.
+	       Note the exterior duality isomorphism must be made
+	       explicit in order for the equality to hold.
+	       The module @TT "E"@ is a rank one graded free
+	       module that twists the map into the right degree.
+     	  Example
+	       j=1,k=3
+	       E=exteriorPower(rank RI_(k-1),RI_(k-1))
+	       exteriorPower(rank(k-1,RI)-j,RI.dd_(k-1)) == cMultiplier(j,k,RI) * ((dual aMultiplier(j,k,RI))**E) * exteriorDuality(rank(k-1,RI)-j,RI_(k-1))
+    Caveat
+	       By default, Macaulay2 does not
+	       check that @TT "F"@ is actually a resolution.
 ///
 
 doc ///
     Key
     	ComputeRanks
 	[aMultiplier,ComputeRanks]
+	[cMultiplier,ComputeRanks]
     Headline
     	Explicitly compute ranks of differentials
     Description
     	Text
-	    The methods @TO "aMultiplier"@ and @TT "cMultiplier"@
+	    The methods @TO "aMultiplier"@ and @TO "cMultiplier"@
 	    compute the ranks of the differentials in a resolution
 	    using the Buchsbaum-Eisenbud exactness criterion.
 	    Setting this optional argument to @TO "true"@ computes
@@ -355,12 +424,15 @@ doc ///
 	       The form @TT "exteriorDuality(k,n)"@ produces a
 	       matrix over the integers, while the form
 	       @TT "exteriorDuality(k,F)"@ produces a matrix over
-	       the ring of the module @TT "F"@.
+	       the ring of the module @TT "F"@. 
+	       Note that if @TT "F"@ is graded, then the exterior
+	       duality is an isomorphism of graded modules.
      	  Example
 	       R=QQ[x,y,z]
-	       F=R^5
+	       F=R^{5:-1}
 	       exteriorDuality(2,5)
 	       exteriorDuality(2,F)
+	       degrees oo
 ///
 
 end
