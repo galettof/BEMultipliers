@@ -435,6 +435,34 @@ doc ///
 	       degrees oo
 ///
 
+
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+-- Tests
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+
+TEST ///
+    A=QQ[x,y,z]
+    K=koszul vars A
+    E2=exteriorPower(rank K_2,K_2)
+    assert(exteriorPower(rank K.dd_2,K.dd_2) == aMultiplier(2,K) * ((dual aMultiplier(3,K))**E2) * exteriorDuality(rank K.dd_2,K_2))
+    E1=exteriorPower(rank K_1,K_1)
+    assert(exteriorPower(rank K.dd_1,K.dd_1) == aMultiplier(1,K) * ((dual aMultiplier(2,K))**E1) * exteriorDuality(rank K.dd_1,K_1))
+    j=1,k=3
+    E=exteriorPower(rank K_(k-1),K_(k-1))
+    assert(exteriorPower(rank(k-1,K)-j,K.dd_(k-1)) == cMultiplier(j,k,K) * ((dual aMultiplier(j,k,K))**E) * exteriorDuality(rank(k-1,K)-j,K_(k-1)))
+///
+
+TEST ///
+    assert(exteriorDuality(2,5) == matrix {{0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, {0, 0, 0, 0, 0, 0, 0,
+     0, -1, 0}, {0, 0, 0, 0, 0, 0, 0, 1, 0, 0}, {0, 0, 0, 0, 0, 0,
+     -1, 0, 0, 0}, {0, 0, 0, 0, 0, 1, 0, 0, 0, 0}, {0, 0, 0, 0,
+     -1, 0, 0, 0, 0, 0}, {0, 0, 0, 1, 0, 0, 0, 0, 0, 0}, {0, 0, 1,
+     0, 0, 0, 0, 0, 0, 0}, {0, -1, 0, 0, 0, 0, 0, 0, 0, 0}, {1, 0,
+     0, 0, 0, 0, 0, 0, 0, 0}})
+///
+
 end
 
 
@@ -442,3 +470,4 @@ uninstallPackage "BuchsbaumEisenbudMultipliers"
 restart
 installPackage "BuchsbaumEisenbudMultipliers"
 installPackage("BuchsbaumEisenbudMultipliers",RemakeAllDocumentation=>true)
+check BuchsbaumEisenbudMultipliers
