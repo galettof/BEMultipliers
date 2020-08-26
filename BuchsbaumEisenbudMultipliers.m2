@@ -389,7 +389,7 @@ doc ///
 	[aMultiplier,ComputeRanks]
 	[cMultiplier,ComputeRanks]
     Headline
-    	Explicitly compute ranks of differentials
+    	explicitly compute ranks of differentials
     Description
     	Text
 	    The methods @TO "aMultiplier"@ and @TO "cMultiplier"@
