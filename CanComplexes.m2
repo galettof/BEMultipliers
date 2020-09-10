@@ -2,6 +2,9 @@ needsPackage "KustinMiller"
 needsPackage "ChainComplexOperations"
 needsPackage "ChainComplexExtras"
 
+--=======================================================================
+--Multilinear algebra codes
+
 -- u and v are complementary sublists of 0..n-1
 -- this function counts the number of inversion to unshuffle u|v
 numberOfInversions = (u,v) -> (
@@ -173,6 +176,29 @@ for i from 0 to (#L)-1 do (
 return map(symmetricPower(p+q,F),symmetricPower(p,F)**symmetricPower(q,F),matrix Mmut);
 )
 
+--this computes the contraction map
+--S_r (F) ** D_n (F) --> D_(n-r) F.
+divContract = (r,n,F) -> (D:=divComult(r,n-r,F);
+M:=map((ring(F))^1,symmetricPower(r,dual F)**symmetricPower(r,F),matrix{flatten entries id_(symmetricPower(r,F))});
+a:=id_(symmetricPower(r,dual(F)))**D;
+b:=M**id_(symmetricPower(n-r,F));
+C:=b*a;
+return C;
+)
+
+--this computes the contraction map
+--D_n(F) **S_r (F)  --> D_(n-r) F.
+revdivContract = (n,r,F) -> (D:=divComult(n-r,r,F);
+M:=map((ring(F))^1,symmetricPower(r,dual F)**symmetricPower(r,F),matrix{flatten entries id_(symmetricPower(r,F))});
+a:=D**id_(symmetricPower(r,dual(F)));
+b:=id_(symmetricPower(n-r,F))**M;
+C:=b*a;
+return C;
+)
+
+--====================================================================================================
+-- Buchsbaum Eisenbud L and K complexes
+
 --This computes the module L_b^a (F) (a schur module
 --corresponding to the appropriate hook partition)
 hook = (a,b,F) -> (C:=extComult(a-1,1,F);
@@ -182,13 +208,28 @@ L:= kernel K;
 return L;
 )
 
+--lists the generators of the hook module
+--in the order that M2 is using, I can explain what the output means
+genList = (a,b,F) -> (L=matrix gens hook(a,b,F);
+n = rank source L;
+m=rank target L;
+L1=flatten table(subsets(1..rank F,a),compositions(rank F,b),(u,v)->{u,v});
+L2=new MutableList;
+for i from 0 to n-1 do (
+	for j from 0 to m-1 do (
+		if not((L_{i})_(j,0)==0) then (L2#(#L2)=flatten {(L_{i})_(j,0),L1_j};);
+	);
+);
+MatrixExpression pack(a+1,toList L2)
+)
+
 --this computes the map L_b^a(F) -> L_b^a-1 (F) induced by the map phi.
 --phi here must be a map F -> R.
 indMap= (a,b,phi) -> (F=source phi;
-T:=(koszul(a,phi)**id_(symmetricPower(b,F)))*inducedMap(exteriorPower(a,F)**symmetricPower(b,F),hook(a,b,F));
-I:=inducedMap(exteriorPower(a-1,F)**symmetricPower(b,F),hook(a-1,b,F));
+T:=(-1)^a*(koszul(a,phi)**id_(symmetricPower(b,F)))*inducedMap(exteriorPower(a,F)**symmetricPower(b,F),hook(a,b,F));
+I:=(-1)^(a-1)*inducedMap(exteriorPower(a-1,F)**symmetricPower(b,F),hook(a-1,b,F));
 N:=prune(T//I);
-return N;)
+N)
 
 --this gives the standard L-complex of Buchsbaum-Eisenbud. Here phi : F -> R;
 --if grade (im phi) = rank F, this is a minimal free resolution of (im phi)^b.
@@ -202,15 +243,7 @@ L#1=dual gens kernel (dual L#2);
 return chainComplex((toList(L))_{1..#toList(L)-1});
 )
 
---this computes the contraction map
---S_r (F) ** D_n (F) --> D_(n-r) F.
-divContract = (r,n,F) -> (D:=divComult(r,n-r,F);
-M:=map((ring(F))^1,symmetricPower(r,dual F)**symmetricPower(r,F),matrix{flatten entries id_(symmetricPower(r,F))});
-a:=id_(symmetricPower(r,dual(F)))**D;
-b:=M**id_(symmetricPower(n-r,F));
-C:=b*a;
-return C;
-)
+
 
 --this computes the module K_b^a (F). It is the Weyl module corresponding
 --to the appropriate hook partition.
@@ -233,12 +266,14 @@ return N;)
 Kcomplex = (b,phi) -> (F:= source phi;
     K=new MutableList;
 for i from 0 to rank F-1 do (
-	K#(#K)=indMapDual(i,b,phi);
+	K#(#K)=(-1)^i*indMapDual(i,b,phi);
 );
 K#(#K)=gens kernel K#(rank F-1 );
 return chainComplex((toList(K))_{1..#(toList(K))-1});
 )
 
+--======================================================================================================
+--The Eagon-Northcott family of complexes
 
 --M is an arbitrary matrix, viewed as a map F -> G. This computes the induced map
 --wedge^a F ** D_b (G^*) -> wedge^(a-1) F ** D_(b-1) (G^*).
@@ -279,7 +314,7 @@ g:=rank(target M);
 ENo = new MutableList;
 if n>=0 then (
 for i from 0 to f-g-n do (
-	ENo#(f-g+1-i)=ENback(f-i,f-g-n-i,M);
+	ENo#(f-g+1-i)=(-1)^(f-g+1-i)*ENback(f-i,f-g-n-i,M);
 );
 ENo#(1+n)=ENbump(g+n,M);
 if n>0 then (
@@ -291,12 +326,76 @@ ENO=chainComplex((toList(ENo))_{1..#toList(ENo)-1});
 );
 if n<0 then (
     for i from 0 to f-g-n do (
-	ENo#(#ENo) = ENback(f-i,f-g-n-i,M);
+	ENo#(#ENo) =(-1)^(f-g+1-i)*ENback(f-i,f-g-n-i,M);
 	);
     ENO=chainComplex(reverse (toList(ENo))_{0..#toList(ENo)-2})[-n];
     );
 return removeZeroTrailingTerms ENO;
 )
+
+--========================================================================================================
+--Generalized Eagon-Northcott complexes coming from "Linear Strands of Determinantal Facet Ideals"
+
+--EN basis list, P is the list of facets
+--in wedge^a times sym_b
+genENBlist = (a,b,P,G) -> (P1 := flatten apply(P,j->subsets(j,a));
+g=rank(G);
+P2:=compositions(g,b);
+P3:=new MutableList;
+for i in P1 do (
+	for j in P2 do (
+		P3#(#P3)=(i,j);
+	);
+);
+unique toList P3
+)
+
+
+--this computes the projection from wedge^a times D_b to the
+--free submodule generated by all the generalized EN basis elts.
+genENprojection = (a,b,P,G) -> (f=max (P/max);
+g= rank(G);
+K1:=subsets(1..f,a);
+K2:=compositions(g,b);
+K3=new MutableList;
+for i in K1 do (
+	for j in K2 do (
+		K3#(#K3)=(i,j);
+	);
+);
+K3=toList K3;
+bList = genENBlist(a,b,P,G);
+mutMat = mutableMatrix(ring G,length bList, length K3);
+for j from 0 to length(K3)-1 do (
+	if member(K3_j,set(bList)) then (
+	mutMat_(position(bList,i->(i==K3_j)),j)=1;
+	);
+);
+matrix mutMat
+)
+
+--generalized Eagon-Northcott differential
+genENdiff = (a,b,M,P) -> (if rank(genENprojection(a-1,b-1,P,target M))>0 and rank(genENprojection(a,b,P,target M))>0 then (
+matrix entries transpose (matrix entries transpose(genENprojection(a-1,b-1,P,target M)*ENback(a,b,M))//(matrix entries transpose genENprojection(a,b,P,target M)))
+)
+)
+
+--this is the generalized Eagon-Northcott complex associated to a determinantal facet ideal.
+--the integer i specifies the size of the minors, and P should be entered as a list of lists,
+--where each entry is a clique of the associated simplicial complex
+genEN = (i,P) -> (M=genMat(i,max (P/max));
+f:=rank(source M);
+g:=rank(target M);
+ENo = new MutableList;
+for i from 0 to f-g do (
+	ENo#(#ENo)=genENdiff(f-i,f-g-i,M,P);
+);
+ENO=chainComplex(delete(null,reverse toList ENo));
+return ENO;
+)
+
+--=================================================================================================================
+--Complexes of "Canonical Complexes Associated to a Matrix" by Andy Kustin
 
 --phi is a map G -> F. This is the induced map
 --appearing in the complex L_phi^(a,b) of Andy Kustin's paper
@@ -330,15 +429,7 @@ C:=b*a;
 return C;
 )
 
---this computes the contraction map
---D_n(F) **S_r (F)  --> D_(n-r) F.
-revdivContract = (n,r,F) -> (D:=divComult(n-r,r,F);
-M:=map((ring(F))^1,symmetricPower(r,dual F)**symmetricPower(r,F),matrix{flatten entries id_(symmetricPower(r,F))});
-a:=D**id_(symmetricPower(r,dual(F)));
-b:=id_(symmetricPower(n-r,F))**M;
-C:=b*a;
-return C;
-)
+
 
 
 --this computes the Weyl module associated to a hook partition in a different way.
@@ -455,6 +546,9 @@ for j from i+2 to f-g+1 do (
 return chainComplex((toList(C)));
 )
 
+--============================================================================================================
+--Tate-like complex associated to the resolution of a cyclic module
+
 --this code subtracts 1 from L in a way that mimics the
 --rank drops in the tate-like complex
 sub1s = L -> (L1 := new MutableList;
@@ -547,7 +641,8 @@ apply(Ln,(l,j,k,k1)->(k1,(id_(tateModule(F,j))**l**id_(tateModule(F,k)))))
 --the appropriate exterior/divided powers for the
 --topmost term of the complex. n is the homological 
 --degree you want the topmost term to appear in.
-tateLike = (F,L,n) -> (n=n+1;
+tateLike = method()
+tateLike(ChainComplex,List,ZZ) := (F,L,n) -> (n=n+1;
 D:=tateRanks(L,n);
 D1=new MutableList;
 for l from 0 to length(D)-2 do (
@@ -569,6 +664,15 @@ for l from 0 to length(D)-2 do (
 return chainComplex((reverse toList(D1))/transpose);
 )
 
+--puts the Tatelike complex in the standard homological degree; disadvantage is that
+--we don't always want the entire Tatelike complex
+tateLike(ChainComplex,List) := (F,L) -> (n=0;
+    for i from 1 to length(L) do n=n+i*L_(i-1);
+    tateLike(F,L,n)
+    )
+
+--===============================================================================================================
+--Gulliksen-Negard complex
 
 --this outputs the cofactor matrix of a matrix M.
 cofactor = M -> (n:=rank source M;
@@ -645,3 +749,94 @@ return chainComplex({d1GN(M),d2,d3,d4});
 )
 
 
+--=======================================================================================================
+--Some useful codes that I use in the examples
+
+--Define the coordinate ring/generic nxn skew symmetric matrix
+pfaffs = n -> (L={};
+for i from 1 to n-1 do (L=L|{x_(i,i+1)..x_(i,n)};
+);
+Q=QQ[splice L];
+genericSkewMatrix(Q,n)
+--F=resBE(M);
+)
+
+--define coordinate ring/generic nxm matrix
+genMat = (n,m) -> (L={};
+for i from 1 to n do ( L=L|{x_(i,1)..x_(i,m)};
+);
+Q=QQ[splice L,MonomialOrder=>Lex];
+Mmut:=mutableMatrix(Q,n,m);
+for i from 0 to n-1 do (
+	for j from 0 to m-1 do (
+		Mmut_(i,j)=x_(i+1,j+1);
+	);
+);
+matrix Mmut
+)
+
+--=============================================================================================================
+--Examples
+
+
+--Running free module:
+F=QQ^4;
+M1=extComult(2,1,F) 
+M2=transpose wedgeProduct(2,1,F)
+M1==M2
+M1=symProduct(1,1,F)
+M2=divComult(1,1,F)
+M1==transpose M2
+M1=symComult(1,2,F)
+M2=divProduct(1,2,F)
+M1==transpose M2
+
+
+--L/K complex examples
+
+Q=QQ[x_1..x_3];
+--minimal free resolution of homogeneous maximal ideal cubed
+Lcomplex(3,vars Q)
+genList(2,3,QQ^3)
+genList(1,3,QQ^3)
+--The L/K complexes are dual to each other
+extend(Lcomplex(2,vars Q),(dual Kcomplex(1,vars Q))[-3],id_(Q^1)) --is an isomorphism
+
+--examples for Eagon-Northcott
+M=genMat(2,4)
+--the standard classical Eagon-Northcott complex
+EN(0,M)
+--the classical Buchsbaum-Rim complex
+EN(1,M)
+extend(EN(0,M),(dual EN(2,M))[-3],id_(Q^1))
+--a class of self dual complexes
+EN(2,genMat(2,6))
+EN(3,genMat(3,9))
+EN(1,genMat(3,5))
+
+
+--generalized Eagon-Northcott complexes
+genEN(2,{{1,2,3,4},{2,3,4,5}})
+prune HH oo
+--the fact that homology is 0 shows that the complex has no
+--minimal nonfaces
+
+--canonical complexes examples (this is example 7.7 of Kustin's paper)
+M=genMat(4,3)
+C=Ccomplex(0,2,M)
+C.dd
+
+--Tatelike complexes
+Q=QQ[x_1..x_3]
+F=Lcomplex(2,vars Q);
+TL1 = tateLike(F,{2,0,0})
+--let's use this to find a DG algebra structure on F
+(extend(F,TL1,id_(Q^1)))_2 --this gives the product between deg 1 elements
+genList(0,2,QQ^3)
+genList(1,2,QQ^3)
+genList(2,2,QQ^3)
+TL2 = tateLike(F,{1,1,0},3)
+(extend(F,TL2,id_(Q^1)))_3 --this is the product between deg 1 and 2 elements
+
+
+--Add in some computations of Buchsbaum-Eisenbud multipliers
