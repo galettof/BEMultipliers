@@ -15,23 +15,8 @@ Description
    
    Buchsbaum-Eisenbud multipliers of all orders have also been implemented as in the structure theorem
    proved by Buchsbaum and Eisenbud and later generalized by Weyman for lower order minors.
-  Example
-    R = ZZ/32003[vars(0..17)];
-    m1 = genericMatrix(R,a,3,3)
-    m2 = genericMatrix(R,j,3,3)
-    I = ideal(m1*m2-m2*m1)
-  Text
-    Here we produce an intentionally nonminimal resolution:
-  Example
-    C = res(I, FastNonminimal=>true)
-  Text
-    Now we prune the resolution above to get a minimal resolution:
-  Example
-    D = pruneComplex(C, UnitTest => isScalar)
-    isCommutative D.cache.pruningMap
-    betti D == betti res I
-Caveat
-  Only supports localization at prime ideals.
+   
+   Examples need to be added here.
 SeeAlso
   "ChainComplexExtras"
   "ChainComplexOperations"
