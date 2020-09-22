@@ -540,7 +540,35 @@ Key
 Headline
     Compute the comultiplication map in the symmetric algebra.
 Usage
-    M = divComult(p,q,F)
+    M = symComult(p,q,F)
+Inputs
+    p,q: ZZ
+    	Integers specifying the parameters of comultiplication.
+    F: Module
+    	A free module.
+Outputs
+    M: Matrix
+    	The matrix representation of the multiplication map $ S_{p+q} (F)\to S_p (F) \otimes S_q (F)$
+	with respect to the default Macaulay2 basis order.
+SeeAlso
+    extComult
+    extContract
+    divComult
+    divProduct
+    symProduct
+    divContract
+    revdivContract
+///
+
+
+doc ///
+Key
+    symProduct
+    (symProduct, ZZ, ZZ, Module)
+Headline
+    Compute the multiplication map in the symmetric algebra.
+Usage
+    M = symProduct(p,q,F)
 Inputs
     p,q: ZZ
     	Integers specifying the parameters of multiplication.
@@ -548,14 +576,98 @@ Inputs
     	A free module.
 Outputs
     M: Matrix
-    	The matrix representation of the multiplication map $ D_p (F) \otimes D_q (F) \to D_{p+q} (F)$
+    	The matrix representation of the multiplication map $S_p (F) \otimes S_q (F)\to S_{p+q} (F)$
 	with respect to the default Macaulay2 basis order.
 SeeAlso
     extComult
     extContract
     divComult
+    divProduct
     symComult
-    symProduct
     divContract
     revdivContract
 ///
+
+doc ///
+Key
+    divContract
+    (divContract, ZZ, ZZ, Module)
+Headline
+    Compute the contraction map on divided powers.
+Usage
+    M = divContract(p,q,F)
+Inputs
+    p,q: ZZ
+    	Integers specifying the parameters of the contraction map.
+    F: Module
+    	A free module.
+Outputs
+    M: Matrix
+    	The matrix representation of the contraction map $S_p (F^*) \otimes D_q (F) \to D_{q-p} (F)$
+	with respect to the default Macaulay2 basis order.
+SeeAlso
+    extComult
+    extContract
+    divComult
+    divProduct
+    symComult
+    symProduct
+    revdivContract
+///
+
+doc ///
+Key
+    revdivContract
+    (revdivContract, ZZ, ZZ, Module)
+Headline
+    Compute the contraction map on divided powers.
+Usage
+    M = revdivContract(p,q,F)
+Inputs
+    p,q: ZZ
+    	Integers specifying the parameters of the contraction map.
+    F: Module
+    	A free module.
+Outputs
+    M: Matrix
+    	The matrix representation of the contraction map $D_q (F) \otimes S_p (F^*) \to D_{q-p} (F)$
+	with respect to the default Macaulay2 basis order.
+SeeAlso
+    extComult
+    extContract
+    divComult
+    divProduct
+    symComult
+    symProduct
+    divContract
+///
+
+
+doc ///
+Key
+    genMat
+    (genMat, ZZ, ZZ)
+    (genMat, ZZ, ZZ, Ring)
+Headline
+    Defines the coordinate ring of a generic matrix and outputs the matrix.
+Usage
+    M=genMat(n,m,R)
+Inputs
+    n,m: ZZ
+    	Integers specifying the size of the desired matrix.
+    R: Ring
+    	A ring specifying which coordinate ring the matrix will live in. If no ring $R$ is given, 
+	the default ring will be $\mathbb{Q}$.
+Outputs
+    M: Matrix
+    	A generic $n \times m$ matrix over the ring $Q = R [ x_{i,j} \ | \ 1 \leq i \leq n, \ 1 \leq j \leq m]$.
+Description
+    Example
+    	M=genMat(2,4)
+	EN(2,M)
+	genMat(4,8)
+SeeAlso
+    EN
+    Ccomplex
+///
+	

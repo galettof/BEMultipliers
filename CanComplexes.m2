@@ -778,10 +778,11 @@ genericSkewMatrix(Q,n)
 )
 
 --define coordinate ring/generic nxm matrix
-genMat = (n,m) -> (L={};
+genMat = method()
+genMat(ZZ,ZZ,Ring) := (n,m,R) -> (L={};
 for i from 1 to n do ( L=L|{x_(i,1)..x_(i,m)};
 );
-Q=QQ[splice L,MonomialOrder=>Lex];
+Q=R[splice L,MonomialOrder=>Lex];
 Mmut:=mutableMatrix(Q,n,m);
 for i from 0 to n-1 do (
 	for j from 0 to m-1 do (
@@ -790,6 +791,8 @@ for i from 0 to n-1 do (
 );
 matrix Mmut
 )
+
+genMat(ZZ,ZZ) := (n,m) -> (genMat(n,m,QQ))
 
 --=============================================================================================================
 --Examples
